@@ -22,10 +22,11 @@ class GoodWeApi:
             'etotal_kwh': self.parseValue(data["etotal"], 'kWh'),
         }
 
+        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
         if data['status'] == 'Normal' or data['status'] == 'Offline':
-            logging.info("{status}: {pgrid_w} W, {eday_kwh} kWh today".format(**result))
+            logging.info(message)
         else:
-            logging.warning("{status}: {pgrid_w} W, {eday_kwh} kWh today".format(**result))
+            logging.warning(message)
 
         return result
 

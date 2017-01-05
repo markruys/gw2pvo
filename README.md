@@ -44,6 +44,8 @@ optional arguments:
   --gw-station-id ID    GoodWe station ID
   --pvo-system-id ID    PVOutput system ID
   --pvo-api-key KEY     PVOutput API key
+  --pvo-interval {5,10,15}
+                        PVOutput interval in minutes
   --log {debug,info,warning,critical}
                         Set log level (default info)
   --skip-offline        Skip uploads when inverter is offline
@@ -74,30 +76,31 @@ The power graph on PVOutput is not based on the power reading from GoodWe, but o
 
 The inverter updates goodwe-power.com each 8 minutes. PVOutput gives you the option to choose to upload each 5, 10, or 15 minutes. Make sure you upload at the same rate as configured at PVOutput.
 
-Depending on you OS, you might want to use a Systemd timer or cronjob to repeatly update the device status on PVOutput.
-
 ### Systemd service
-In case you want to run the script as a Systemd service, you can use the following template:
+If you run gw2pvo on a Systemd scheduler, you could install the script as a service, like:
 
 ```
 [Unit]
 Description=Read GoodWe inverter and upload data to PVOutput
 
 [Service]
-ExecStart=gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY
+WorkingDirectory=/home/gw2pvo
+ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval INTERVAL
+Restart=always
+RestartSec=300
+User=gw2pvo
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-You need a Systemd timer to call the service each 5 minutes.
+Store the file as ``/etc/systemd/system/gw2pvo.service`` and run:
 
-### Cronjob
-
-Use something like:
-
-    */5 * * * * gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY
-
+    sudo useradd -m gw2pvo
+    sudo systemctl enable gw2pvo
+    sudo systemctl start gw2pvo
+    sudo systemctl status gw2pvo
+    sudo journalctl -u gw2pvo -f
 
 ## Inspiration
 
