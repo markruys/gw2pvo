@@ -9,8 +9,9 @@ from gw2pvo import gw_api
 from gw2pvo import gw_csv
 from gw2pvo import pvo_api
 from gw2pvo import __version__
+from gw2pvo import average
 
-def run_once(args):
+def run_once(args, aver):
 
     # Check if we only want to run during daylight
     if args.city:
@@ -42,7 +43,7 @@ def run_once(args):
 
     # Submit reading to PVOutput
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_status(data)
+    pvo.add_status(data['pgrid_w'], aver.add(data['eday_kwh']))
 
 def run():
 
@@ -72,9 +73,12 @@ def run():
 
     startTime = datetime.now()
 
+    # The shorter the interval, the stronger we need some running average for GoodWe
+    aver = average.MovingAverage(4 - args.pvo_interval / 5)
+
     while True:
         try:
-            run_once(args)
+            run_once(args, aver)
         except Exception as exp:
             logging.error(exp)
 

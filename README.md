@@ -74,18 +74,20 @@ Off course replace GWID, PVOID, and KEY for the proper values. DATE will be auto
 
 The power graph on PVOutput is not based on the power reading from GoodWe, but on the amount of energy produced this day. This has the advantage that it does not matter if you skip one or more readings.
 
-The inverter updates goodwe-power.com each 8 minutes. PVOutput gives you the option to choose to upload each 5, 10, or 15 minutes. Make sure you upload at the same rate as configured at PVOutput.
+PVOutput gives you the option to choose to upload each 5, 10, or 15 minutes. Make sure you upload at the same rate as configured at PVOutput.
+
+The inverter updates goodwe-power.com each 8 minutes. The API gives resolution for produced energy of only 0.1 kWh. So for a 5 minute interval we get a resolution of 1200 watt, which is pretty big. To get smooth PVOutput graphs, we apply a running average which depends on the configured PVOutput upload interval time.
 
 ### Systemd service
-If you run gw2pvo on a Systemd scheduler, you could install the script as a service, like:
+If you run gw2pvo on a Systemd based Linux, you could install the script as a service, like:
 
 ```
 [Unit]
-Description=Read GoodWe inverter and upload data to PVOutput
+Description=Read GoodWe inverter and upload data to PVOutput.org
 
 [Service]
 WorkingDirectory=/home/gw2pvo
-ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval INTERVAL
+ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
 Restart=always
 RestartSec=300
 User=gw2pvo
