@@ -33,9 +33,10 @@ Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a devi
 ## Usage
 
 ```
-usage: gw2pvo [-h] --gw-station-id ID --pvo-system-id ID --pvo-api-key KEY
-                   [--log {debug,info,warning,critical}] [--skip-offline]
-                   [--city CITY] [--csv CSV] [--version]
+usage: gw2pvo [-h] --gw-station-id ID --pvo-system-id ID --pvo-api-key
+                   KEY [--pvo-interval {5,10,15}]
+                   [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
+                   [--skip-offline] [--city CITY] [--csv CSV] [--version]
 
 Upload GoodWe power inverter data to PVOutput.org
 
@@ -48,12 +49,12 @@ optional arguments:
                         PVOutput interval in minutes
   --log {debug,info,warning,critical}
                         Set log level (default info)
+  --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
   --skip-offline        Skip uploads when inverter is offline
   --city CITY           Skip uploads from dusk till dawn
-  --csv CSV             Add readings to a Excel compatible CSV file, DATE in
-                        the name will be replaced by the current date
+  --csv CSV             Append readings to a Excel compatible CSV file, DATE
+                        in the name will be replaced by the current date
   --version             show program's version number and exit
-
 ```
 
 ### Examples
@@ -104,7 +105,17 @@ Store the file as ``/etc/systemd/system/gw2pvo.service`` and run:
     sudo systemctl status gw2pvo
     sudo journalctl -u gw2pvo -f
 
-## Inspiration
+## Recover missed data
 
-  * [Capturing Solar Generation Data from the GoodWe Portal](http://persistantillusion.blogspot.nl/2015/06/capturing-solar-generation-data-from.html)
-  * [The Internet-of-Things I don't really like](https://brnrd.eu/misc/2016-03-13/goodwe-logging-to-pvoutput.html)
+You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
+
+```
+gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --data YYYY-MM-DD
+```
+
+Beware that the date parameter must be not be older than 14 days from the current date. In donation mode, not more than 90 days.
+
+
+## Warning
+
+GoodWe access is based on the undocumented API used by mobile apps. It could be very well that at a certain point GoodWe decides to alter or disable the API.

@@ -45,6 +45,15 @@ def run_once(args, aver):
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
     pvo.add_status(data['pgrid_w'], aver.add(data['eday_kwh']))
 
+def copy(args):
+    # Fetch readings from GoodWe
+    gw = gw_api.GoodWeApi(args.gw_station_id)
+    data = gw.getDayReadings(datetime.strptime(args.date, "%Y-%m-%d"))
+
+    # Submit readings to PVOutput
+    pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+    pvo.add_day(data)
+
 def run():
 
     # Parse command line arguments
@@ -54,6 +63,7 @@ def run():
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
+    parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
     parser.add_argument("--city", help="Skip uploads from dusk till dawn")
     parser.add_argument('--csv', help="Append readings to a Excel compatible CSV file, DATE in the name will be replaced by the current date")
@@ -69,6 +79,11 @@ def run():
     # Check if we're running the supported Python version
     if sys.version_info[0] != 3:
         logging.error("Please use Python 3 to run this script")
+        sys.exit()
+
+    # Check if we want to copy old data
+    if args.date:
+        copy(args)
         sys.exit()
 
     startTime = datetime.now()

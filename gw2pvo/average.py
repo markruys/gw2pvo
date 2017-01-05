@@ -10,7 +10,6 @@ class MovingAverage:
     def add(self, x):
 
         if len(self.queue) == 0:
-            print(x, self.n)
             self.queue = [x] * self.n
             self.total = sum(self.queue)
             self.numerator = x * self.denominator

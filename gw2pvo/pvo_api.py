@@ -8,6 +8,7 @@ class PVOutputApi:
         self.m_system_id = system_id
         self.m_api_key = api_key
 
+
     def add_status(self, pgrid_w, eday_kwh):
         t = time.localtime()
         payload = {
@@ -18,6 +19,28 @@ class PVOutputApi:
         }
 
         self.call("http://pvoutput.org/service/r2/addstatus.jsp", payload)
+
+    def add_day(self, data):
+        # Send day data in batches of 30.
+
+        for chunk in [ data[i:i + 30] for i in range(0, len(data), 30) ]:
+
+            readings = []
+            for reading in chunk:
+                dt = reading['dt']
+                fields = [
+                    dt.strftime('%Y%m%d'),
+                    dt.strftime('%H:%M'),
+                    str(round(reading['eday_kwh'] * 1000)),
+                    str(reading['pgrid_w'])
+                ]
+                readings.append(",".join(fields))
+
+            payload = {
+                'data' : ";".join(readings)
+            }
+
+            self.call("http://pvoutput.org/service/r2/addbatchstatus.jsp", payload)
 
     def call(self, url, payload):
         logging.debug(payload)
