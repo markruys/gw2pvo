@@ -74,7 +74,8 @@ def run():
     startTime = datetime.now()
 
     # The shorter the interval, the stronger we need some running average for GoodWe
-    aver = average.MovingAverage(4 - args.pvo_interval / 5)
+    subset_size = 4 - args.pvo_interval / 5 if args.pvo_interval else 1
+    aver = average.MovingAverage(subset_size)
 
     while True:
         try:

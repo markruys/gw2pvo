@@ -31,12 +31,17 @@ class PVOutputApi:
         for i in range(3):
             try:
                 r = requests.post(url, headers=headers, data=payload, timeout=10)
-                if int(r.headers['X-Rate-Limit-Remaining']) < 20:
+                reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
+                if int(r.headers['X-Rate-Limit-Remaining']) < 10:
                     logging.warning("Only {} requests left, reset after {} seconds".format(
                         r.headers['X-Rate-Limit-Remaining'],
-                        round(float(r.headers['X-Rate-Limit-Reset']) - time.time())))
-                r.raise_for_status()
-                break
+                        reset))
+                if r.status_code == 403:
+                    logging.warning("Forbidden: " + r.reason)
+                    time.sleep(reset + 1)
+                else:
+                    r.raise_for_status()
+                    break
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
             time.sleep(30)
