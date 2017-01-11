@@ -11,7 +11,15 @@ from gw2pvo import pvo_api
 from gw2pvo import __version__
 from gw2pvo import average
 
+__author__ = "Mark Ruys"
+__copyright__ = "Copyright 2017, Mark Ruys"
+__license__ = "MIT"
+__email__ = "mark@paracas.nl"
+
+last_eday_kwh = 0
+
 def run_once(args, aver):
+    global last_eday_kwh
 
     # Check if we only want to run during daylight
     if args.city:
@@ -41,9 +49,15 @@ def run_once(args, aver):
             csv = gw_csv.GoodWeCSV(args.csv)
             csv.append(data)
 
-    # Submit reading to PVOutput
-    pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_status(data['pgrid_w'], aver.add(data['eday_kwh']))
+    # Submit reading to PVOutput, if they differ from the previous set
+    eday_kwh = aver.add(data['eday_kwh'])
+    if data['pgrid_w'] == 0 and abs(eday_kwh - last_eday_kwh) < 0.001:
+        logging.debug("Ignore unchanged reading")
+    else:
+        last_eday_kwh = eday_kwh
+
+        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+        pvo.add_status(data['pgrid_w'], last_eday_kwh)
 
 def copy(args):
     # Fetch readings from GoodWe
