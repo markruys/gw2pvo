@@ -1,5 +1,10 @@
 import logging
 
+__author__ = "Mark Ruys"
+__copyright__ = "Copyright 2017, Mark Ruys"
+__license__ = "MIT"
+__email__ = "mark@paracas.nl"
+
 class MovingAverage:
 
     def __init__(self, n):

@@ -2,6 +2,11 @@ import logging
 import datetime
 import csv
 
+__author__ = "Mark Ruys"
+__copyright__ = "Copyright 2017, Mark Ruys"
+__license__ = "MIT"
+__email__ = "mark@paracas.nl"
+
 class GoodWeCSV:
 
     def __init__(self, filename):

@@ -2,6 +2,11 @@ import logging
 import time
 import requests
 
+__author__ = "Mark Ruys"
+__copyright__ = "Copyright 2017, Mark Ruys"
+__license__ = "MIT"
+__email__ = "mark@paracas.nl"
+
 class PVOutputApi:
 
     def __init__(self, system_id, api_key):
@@ -67,7 +72,7 @@ class PVOutputApi:
                     break
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
-            time.sleep(30)
+            time.sleep(3)
         else:
             logging.error("Failed to call PVOutput API")
 

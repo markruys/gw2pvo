@@ -3,6 +3,8 @@ import requests
 import time
 from html.parser import HTMLParser
 
+# Deprecated
+#
 # Note that this file is not used anymore as the JSON variant is more reliable.
 
 class GwHTMLParser(HTMLParser):

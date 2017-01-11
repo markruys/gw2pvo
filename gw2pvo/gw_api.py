@@ -3,6 +3,11 @@ import time
 import datetime
 import requests
 
+__author__ = "Mark Ruys"
+__copyright__ = "Copyright 2017, Mark Ruys"
+__license__ = "MIT"
+__email__ = "mark@paracas.nl"
+
 class GoodWeApi:
 
     def __init__(self, system_id):
@@ -86,7 +91,7 @@ class GoodWeApi:
                 return json
             except requests.exceptions.RequestException as exp:
                 logging.warning(exp)
-            time.sleep(30)
+            time.sleep(3)
         else:
             logging.error("Failed to call GoodWe API")
 
