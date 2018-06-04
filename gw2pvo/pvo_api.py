@@ -23,7 +23,7 @@ class PVOutputApi:
             'v2' : round(pgrid_w)
         }
 
-        self.call("http://pvoutput.org/service/r2/addstatus.jsp", payload)
+        self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
 
     def add_day(self, data):
         # Send day data in batches of 30.
@@ -45,7 +45,7 @@ class PVOutputApi:
                 'data' : ";".join(readings)
             }
 
-            self.call("http://pvoutput.org/service/r2/addbatchstatus.jsp", payload)
+            self.call("https://pvoutput.org/service/r2/addbatchstatus.jsp", payload)
 
     def call(self, url, payload):
         logging.debug(payload)
