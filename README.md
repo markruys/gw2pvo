@@ -7,11 +7,13 @@ gw2pvo is a command line tool to upload solar data from a GoodWe power inverter 
 
 You need to have Python 3 and pip installed. Then:
 
-    pip install https://github.com/markruys/gw2pvo/releases/download/v1.0.0/gw2pvo-1.0.0.tar.gz
+    pip install https://github.com/markruys/gw2pvo/releases/download/v1.1.0/gw2pvo-1.1.0.tar.gz
 
 Next determine the Station ID from the GoodWe site as follows. Open
 
-    www.goodwe-power.com/Mobile/GetMyPowerStationByUser?userName=USERNAME
+    https://www.goodwe-power.com/Mobile/GetMyPowerStationByUser?userName=USERNAME
+    https://au.goodwe-power.com/Mobile/GetMyPowerStationByUser?userName=USERNAME
+    https://eu.goodwe-power.com/Mobile/GetMyPowerStationByUser?userName=USERNAME
 
 where you substitute your username for USERNAME. As reponse you'll get a JSON string like:
 
@@ -33,16 +35,17 @@ Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a devi
 ## Usage
 
 ```
-usage: gw2pvo [-h] --gw-station-id ID --pvo-system-id ID --pvo-api-key
-                   KEY [--pvo-interval {5,10,15}]
-                   [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
-                   [--skip-offline] [--city CITY] [--csv CSV] [--version]
+usage: gw2pvo [-h] --gw-station-id ID [--gw-region REGION] --pvo-system-id ID
+              --pvo-api-key KEY [--pvo-interval {5,10,15}]
+              [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
+              [--skip-offline] [--city CITY] [--csv CSV] [--version]
 
 Upload GoodWe power inverter data to PVOutput.org
 
 optional arguments:
   -h, --help            show this help message and exit
   --gw-station-id ID    GoodWe station ID
+  --gw-region REGION    Region where the equipment is installed
   --pvo-system-id ID    PVOutput system ID
   --pvo-api-key KEY     PVOutput API key
   --pvo-interval {5,10,15}
@@ -57,16 +60,18 @@ optional arguments:
   --version             show program's version number and exit
 ```
 
+Possible regions are EU, AU, or global.
+
 ### Examples
 
 ```
-gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --log debug
+gw2pvo --gw-station-id GWID --gw-region global --pvo-system-id PVOID --pvo-api-key KEY --log debug
 ```
 
 If you want to save readings in a daily CSV file:
 
 ```
-gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --csv "Solar DATE.csv"
+gw2pvo --gw-station-id GWID --gw-region global --pvo-system-id PVOID --pvo-api-key KEY --csv "Solar DATE.csv"
 ```
 
 Off course replace GWID, PVOID, and KEY for the proper values. DATE will be automatically substitured by the current date.
@@ -80,6 +85,7 @@ PVOutput gives you the option to choose to upload each 5, 10, or 15 minutes. Mak
 The inverter updates goodwe-power.com each 8 minutes. The API gives resolution for produced energy of only 0.1 kWh. So for a 5 minute interval we get a resolution of 1200 watt, which is pretty big. To get smooth PVOutput graphs, we apply a running average which depends on the configured PVOutput upload interval time.
 
 ### Systemd service
+
 If you run gw2pvo on a Systemd based Linux, you could install the script as a service, like:
 
 ```
@@ -88,7 +94,7 @@ Description=Read GoodWe inverter and upload data to PVOutput.org
 
 [Service]
 WorkingDirectory=/home/gw2pvo
-ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
+ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-region global --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
 Restart=always
 RestartSec=300
 User=gw2pvo
@@ -110,7 +116,7 @@ Store the file as ``/etc/systemd/system/gw2pvo.service`` and run:
 You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
 
 ```
-gw2pvo --gw-station-id GWID --pvo-system-id PVOID --pvo-api-key KEY --data YYYY-MM-DD
+gw2pvo --gw-station-id GWID --gw-region global --pvo-system-id PVOID --pvo-api-key KEY --data YYYY-MM-DD
 ```
 
 Beware that the date parameter must be not be older than 14 days from the current date. In donation mode, not more than 90 days.

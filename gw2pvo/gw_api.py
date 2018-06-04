@@ -10,9 +10,14 @@ __email__ = "mark@paracas.nl"
 
 class GoodWeApi:
 
-    def __init__(self, system_id):
+    def __init__(self, system_id, region):
         self.system_id = system_id
-
+        if region == 'EU':
+            self.base_url = 'https://eu.goodwe-power.com'
+        elif region == 'AU':
+            self.base_url = 'https://au.goodwe-power.com'
+        else:
+            self.base_url = 'https://www.goodwe-power.com'
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
@@ -20,7 +25,9 @@ class GoodWeApi:
         payload = {
             'stationId' : self.system_id
         }
-        data = self.call("http://www.goodwe-power.com/Mobile/GetMyPowerStationById", payload)
+
+        # goodwe_server: # eu, au or www
+        data = self.call("/Mobile/GetMyPowerStationById", payload)
 
         result = {
             'status' : data["status"],
@@ -45,10 +52,10 @@ class GoodWeApi:
             'stationId' : self.system_id,
             'date' : date.strftime('%Y-%m-%d')
         }
-        data = self.call("http://www.goodwe-power.com/Mobile/GetEDayForMobile", payload)
+        data = self.call("/Mobile/GetEDayForMobile", payload)
         eday_kwh = float(data['EDay'])
 
-        data = self.call("http://www.goodwe-power.com/Mobile/GetPacLineChart", payload)
+        data = self.call("/Mobile/GetPacLineChart", payload)
         if len(data) < 2:
             logging.warning(payload['date'] + " - Received bad data " + str(data))
         else:
@@ -84,7 +91,7 @@ class GoodWeApi:
     def call(self, url, payload):
         for i in range(3):
             try:
-                r = requests.get(url, params=payload, timeout=10)
+                r = requests.get(self.base_url + url, params=payload, timeout=10)
                 r.raise_for_status()
                 json = r.json()
                 logging.debug(json)

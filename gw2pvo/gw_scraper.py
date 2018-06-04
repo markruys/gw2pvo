@@ -37,10 +37,16 @@ class GwHTMLParser(HTMLParser):
         return self.column
 
 class GoodWe:
-    url = "http://www.goodwe-power.com/PowerStationPlatform/PowerStationReport/InventerDetail"
 
-    def __init__(self, system_id):
+    def __init__(self, system_id, region):
         self.system_id = system_id
+        if region == 'EU':
+            base_url = 'https://eu.goodwe-power.com'
+        if region == 'AU':
+            base_url = 'https://au.goodwe-power.com'
+        else:
+            base_url = 'https://www.goodwe-power.com'
+        self.url = base_url + "/PowerStationPlatform/PowerStationReport/InventerDetail"
 
     def get(self):
         ''' Scrape the most recent reading from the GoodWe site. '''

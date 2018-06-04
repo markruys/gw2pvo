@@ -12,7 +12,7 @@ from gw2pvo import __version__
 from gw2pvo import average
 
 __author__ = "Mark Ruys"
-__copyright__ = "Copyright 2017, Mark Ruys"
+__copyright__ = "Copyright 2017-2018, Mark Ruys"
 __license__ = "MIT"
 __email__ = "mark@paracas.nl"
 
@@ -31,7 +31,7 @@ def run_once(args, aver):
             return
 
     # Fetch the last reading from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id)
+    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_region)
     data = gw.getCurrentReadings()
 
     # Check if we want to abort when offline
@@ -61,7 +61,7 @@ def run_once(args, aver):
 
 def copy(args):
     # Fetch readings from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id)
+    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_region)
     data = gw.getDayReadings(datetime.strptime(args.date, "%Y-%m-%d"))
 
     # Submit readings to PVOutput
@@ -73,6 +73,7 @@ def run():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Upload GoodWe power inverter data to PVOutput.org")
     parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID', required=True)
+    parser.add_argument("--gw-region", help="Region where the equipment is installed", metavar='REGION', choices=['EU', 'AU', 'global'], default='global')
     parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=True)
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
