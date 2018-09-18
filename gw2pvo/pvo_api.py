@@ -64,7 +64,7 @@ class PVOutputApi:
 
         for i in range(3):
             try:
-                r = requests.post(url, headers=headers, data=payload, timeout=10, proxies={"http": "http://127.0.0.1:8888", "https":"http:127.0.0.1:8888"}, verify=r"FiddlerRoot.pem")
+                r = requests.post(url, headers=headers, data=payload, timeout=10)
                 reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
                 if int(r.headers['X-Rate-Limit-Remaining']) < 10:
                     logging.warning("Only {} requests left, reset after {} seconds".format(

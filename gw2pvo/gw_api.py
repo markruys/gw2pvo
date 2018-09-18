@@ -1,8 +1,8 @@
+import json
 import logging
 import time
 import datetime
 import requests
-import json
 
 __author__ = "Mark Ruys"
 __copyright__ = "Copyright 2017, Mark Ruys"
@@ -40,8 +40,8 @@ class GoodWeApi:
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }
-        logging.info(result)
-        message = "{status}, {pgrid_w}W now, {eday_kwh}kWh today".format(**result)
+
+        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
