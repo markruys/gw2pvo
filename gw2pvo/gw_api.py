@@ -2,6 +2,7 @@ import logging
 import time
 import datetime
 import requests
+import json
 
 __author__ = "Mark Ruys"
 __copyright__ = "Copyright 2017, Mark Ruys"
@@ -10,34 +11,38 @@ __email__ = "mark@paracas.nl"
 
 class GoodWeApi:
 
-    def __init__(self, system_id, region):
+    def __init__(self, system_id, account, password):
         self.system_id = system_id
-        if region == 'EU':
-            self.base_url = 'https://eu.goodwe-power.com'
-        elif region == 'AU':
-            self.base_url = 'https://au.goodwe-power.com'
-        else:
-            self.base_url = 'https://www.goodwe-power.com'
+        self.account = account
+        self.password = password
+        self.token = '{"version":"v2.0.4","client":"ios","language":"en"}'
+        self.global_url = 'https://globalapi.sems.com.cn/api/'
+        self.base_url = self.global_url
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
 
         payload = {
-            'stationId' : self.system_id
+            'powerStationId' : self.system_id
         }
 
-        # goodwe_server: # eu, au or www
-        data = self.call("/Mobile/GetMyPowerStationById", payload)
-
+        # goodwe_server
+        data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+        
+        inverterData = data['inverter'][0]
+        
         result = {
-            'status' : data["status"],
-            'pgrid_w' : self.parseValue(data["curpower"], 'kW') * 1000,
-            'eday_kwh' : self.parseValue(data["eday"], 'kWh'),
-            'etotal_kwh' : self.parseValue(data["etotal"], 'kWh'),
+            'status' : inverterData['warning_bms'],
+            'pgrid_w' : inverterData['out_pac'],
+            'eday_kwh' : inverterData['eday'],
+            'etotal_kwh' : inverterData['etotal'],
+            'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
+            'latitude' : data['info'].get('latitude'),
+            'longitude' : data['info'].get('longitude')
         }
-
-        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
-        if data['status'] == 'Normal' or data['status'] == 'Offline':
+        logging.info(result)
+        message = "{status}, {pgrid_w}W now, {eday_kwh}kWh today".format(**result)
+        if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
             logging.warning(message)
@@ -89,16 +94,27 @@ class GoodWeApi:
 
 
     def call(self, url, payload):
-        for i in range(3):
+        for i in range(4):
             try:
-                r = requests.get(self.base_url + url, params=payload, timeout=10)
+                headers = { 'User-Agent': 'PVMaster/2.0.4 (iPhone; iOS 11.4.1; Scale/2.00)', 'Token': self.token }
+
+                r = requests.post(self.base_url + url, headers=headers, data=payload, timeout=10)
                 r.raise_for_status()
-                json = r.json()
-                logging.debug(json)
-                return json
+                data = r.json()
+                logging.debug(data)
+
+                if data['msg'] == 'success' and data['data'] != None:
+                    return data['data']
+                else:
+                    loginPayload = { 'account': self.account, 'pwd': self.password }
+                    r = requests.post(self.global_url + 'v1/Common/CrossLogin', headers=headers, data=loginPayload, timeout=10)
+                    r.raise_for_status()
+                    data = r.json()
+                    self.base_url = data['api']
+                    self.token = json.dumps(data['data'])
             except requests.exceptions.RequestException as exp:
                 logging.warning(exp)
-            time.sleep(3)
+            time.sleep(i ^ 3)
         else:
             logging.error("Failed to call GoodWe API")
 

@@ -14,7 +14,7 @@ class PVOutputApi:
         self.m_api_key = api_key
 
 
-    def add_status(self, pgrid_w, eday_kwh):
+    def add_status(self, pgrid_w, eday_kwh, temperature: None, voltage: None):
         t = time.localtime()
         payload = {
             'd' : "{:04}{:02}{:02}".format(t.tm_year, t.tm_mon, t.tm_mday),
@@ -22,6 +22,12 @@ class PVOutputApi:
             'v1' : round(eday_kwh * 1000),
             'v2' : round(pgrid_w)
         }
+
+        if temperature != None:
+            payload['v5'] = temperature
+        
+        if voltage != None:
+            payload['v6'] = voltage
 
         self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
 
@@ -58,7 +64,7 @@ class PVOutputApi:
 
         for i in range(3):
             try:
-                r = requests.post(url, headers=headers, data=payload, timeout=10)
+                r = requests.post(url, headers=headers, data=payload, timeout=10, proxies={"http": "http://127.0.0.1:8888", "https":"http:127.0.0.1:8888"}, verify=r"FiddlerRoot.pem")
                 reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
                 if int(r.headers['X-Rate-Limit-Remaining']) < 10:
                     logging.warning("Only {} requests left, reset after {} seconds".format(
@@ -72,7 +78,7 @@ class PVOutputApi:
                     break
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
-            time.sleep(3)
+            time.sleep(i ^ 3)
         else:
             logging.error("Failed to call PVOutput API")
 
