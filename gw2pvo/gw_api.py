@@ -52,7 +52,13 @@ class GoodWeApi:
 
 
     def getDayReadings(self, date):
-        result = []
+        entries = []
+
+        payload = {
+            'powerStationId' : self.system_id
+        }
+
+        data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
 
         payload = {
             'powerstation_id' : self.system_id,
@@ -60,6 +66,11 @@ class GoodWeApi:
             'date' : date.strftime('%Y-%m-%d')
         }
         
+        result = {
+            'latitude' : data['info'].get('latitude'),
+            'longitude' : data['info'].get('longitude')
+        }
+
         data = self.call("PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
         eday_kwh = data[0]['p']
 
@@ -92,11 +103,13 @@ class GoodWeApi:
                 increase = pgrid_w * sample['minutes'] * factor
                 if increase > 0:
                     eday_kwh += increase
-                    result.append({
+                    entries.append({
                         'dt' : date,
                         'pgrid_w': pgrid_w,
                         'eday_kwh': round(eday_kwh, 3)
                     })
+
+        result['entries'] = entries
 
         return result
 

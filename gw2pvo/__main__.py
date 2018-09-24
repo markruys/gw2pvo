@@ -66,12 +66,18 @@ def run_once(args, aver):
 
 def copy(args):
     # Fetch readings from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
-    data = gw.getDayReadings(datetime.strptime(args.date, "%Y-%m-%d"))
+    date = datetime.strptime(args.date, "%Y-%m-%d")
 
+    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
+    data = gw.getDayReadings(date)
+
+    if args.darksky_api_key:
+        ds = ds_api.DarkSkyApi(args.darksky_api_key)
+        temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
+    
     # Submit readings to PVOutput
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_day(data)
+    pvo.add_day(data['entries'], temperatures)
 
 def run():
 

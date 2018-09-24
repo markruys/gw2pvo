@@ -31,7 +31,7 @@ class PVOutputApi:
 
         self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
 
-    def add_day(self, data):
+    def add_day(self, data, temperatures: None):
         # Send day data in batches of 30.
 
         for chunk in [ data[i:i + 30] for i in range(0, len(data), 30) ]:
@@ -45,6 +45,13 @@ class PVOutputApi:
                     str(round(reading['eday_kwh'] * 1000)),
                     str(reading['pgrid_w'])
                 ]
+
+                if temperatures is not None:
+                    fields.append('')
+                    fields.append('')
+                    temperature = list(filter(lambda x: dt.timestamp() > x['time'], temperatures))[-1]
+                    fields.append(str(temperature['temperature']))
+
                 readings.append(",".join(fields))
 
             payload = {
