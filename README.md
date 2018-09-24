@@ -121,6 +121,9 @@ gw2pvo --gw-station-id GWID --gw-region global --pvo-system-id PVOID --pvo-api-k
 
 Beware that the date parameter must be not be older than 14 days from the current date. In donation mode, not more than 90 days.
 
+## Docker
+
+Michaël Hompus created a [Docker container](https://hub.docker.com/r/energy164/gw2pvo/) ([Github](https://github.com/eNeRGy164/gw2pvo-docker)) to run gw2pvo.
 
 ## Warning
 
