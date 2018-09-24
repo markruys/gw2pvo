@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-import datetime
+from datetime import datetime, timedelta
 import requests
 
 __author__ = "Mark Ruys"
@@ -55,33 +55,40 @@ class GoodWeApi:
         result = []
 
         payload = {
-            'stationId' : self.system_id,
+            'powerstation_id' : self.system_id,
+            'count' : 1,
             'date' : date.strftime('%Y-%m-%d')
         }
-        data = self.call("/Mobile/GetEDayForMobile", payload)
-        eday_kwh = float(data['EDay'])
+        
+        data = self.call("PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
+        eday_kwh = data[0]['p']
 
-        data = self.call("/Mobile/GetPacLineChart", payload)
+        payload = {
+            'id' : self.system_id,
+            'date' : date.strftime('%Y-%m-%d')
+        }
+
+        data = self.call("PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
         if len(data) < 2:
             logging.warning(payload['date'] + " - Received bad data " + str(data))
         else:
             minutes = 0
             eday_from_power = 0
-            for sample in data:
-                hm = sample['HourNum'].split(":")
-                next_minutes = int(hm[0]) * 60 + int(hm[1])
+            for sample in data['pacs']:
+                parsed_date = datetime.strptime(sample['date'], "%m/%d/%Y %H:%M:%S")
+                next_minutes = parsed_date.hour * 60 + parsed_date.minute
                 sample['minutes'] = next_minutes - minutes
                 minutes = next_minutes
-                eday_from_power += int(sample['HourPower']) * sample['minutes']
+                eday_from_power += sample['pac'] * sample['minutes']
             factor = eday_kwh / eday_from_power
 
-            if len(data) == 145:
+            if len(data['pacs']) == 145:
                 data.pop()
 
             eday_kwh = 0
-            for sample in data:
-                date += datetime.timedelta(minutes=sample['minutes'])
-                pgrid_w = int(sample['HourPower'])
+            for sample in data['pacs']:
+                date += timedelta(minutes=sample['minutes'])
+                pgrid_w = sample['pac']
                 increase = pgrid_w * sample['minutes'] * factor
                 if increase > 0:
                     eday_kwh += increase
