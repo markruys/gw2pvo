@@ -83,12 +83,12 @@ def run():
     parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=True)
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
+    parser.add_argument("--darksky-api-key", help="Dark Sky Weather API Key")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
     parser.add_argument("--city", help="Skip uploads from dusk till dawn")
     parser.add_argument('--csv', help="Append readings to a Excel compatible CSV file, DATE in the name will be replaced by the current date")
-    parser.add_argument("--darksky-api-key", help="Dark Sky Weather API Key")
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
 

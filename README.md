@@ -31,33 +31,39 @@ Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a devi
   1. The API Key
   2. The System Id of your device
 
+Optionally, for actual weather information you can get a (free) [Dark Sky API](https://darksky.net/dev) account. Register and get 1,000 free calls per day. From DarkSky you need:
+  
+  1. Secret API Key
 
 ## Usage
 
 ```
-usage: gw2pvo [-h] --gw-station-id ID [--gw-region REGION] --pvo-system-id ID
-              --pvo-api-key KEY [--pvo-interval {5,10,15}]
+usage: gw2pvo [-h] --gw-station-id ID --gw-account ACCOUNT --gw-password 
+              PASSWORD --pvo-system-id ID --pvo-api-key KEY 
+              [--pvo-interval {5,10,15}]
+              [--darksky-api-key KEY]
               [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
               [--skip-offline] [--city CITY] [--csv CSV] [--version]
 
 Upload GoodWe power inverter data to PVOutput.org
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --gw-station-id ID    GoodWe station ID
-  --gw-region REGION    Region where the equipment is installed
-  --pvo-system-id ID    PVOutput system ID
-  --pvo-api-key KEY     PVOutput API key
-  --pvo-interval {5,10,15}
-                        PVOutput interval in minutes
+  -h, --help                show this help message and exit
+  --gw-station-id ID        GoodWe station ID
+  --gw-account ACCOUNT      GoodWe account (e-mail address)
+  --gw-password PASSWORD    GoodWe account password
+  --pvo-system-id ID        PVOutput system ID
+  --pvo-api-key KEY         PVOutput API key
+  --pvo-interval {5,10,15}  PVOutput interval in minutes
+  --darksky-api-key KEY     DarkSky API key
   --log {debug,info,warning,critical}
-                        Set log level (default info)
-  --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
-  --skip-offline        Skip uploads when inverter is offline
-  --city CITY           Skip uploads from dusk till dawn
-  --csv CSV             Append readings to a Excel compatible CSV file, DATE
-                        in the name will be replaced by the current date
-  --version             show program's version number and exit
+                            Set log level (default info)
+  --date YYYY-MM-DD         Copy all readings (max 14/90 days ago)
+  --skip-offline            Skip uploads when inverter is offline
+  --city CITY               Skip uploads from dusk till dawn
+  --csv CSV                 Append readings to a Excel compatible CSV file, DATE
+                            in the name will be replaced by the current date
+  --version                 show program's version number and exit
 ```
 
 Possible regions are EU, AU, or global.
