@@ -16,7 +16,7 @@ class DarkSkyApi:
         if latitude == None or longitude == None:
             return None
 
-        for i in range(3):
+        for i in range(1, 4):
             try:
                 data = {
                     'apiKey' : self.api_key,
@@ -33,6 +33,6 @@ class DarkSkyApi:
                 return result['currently']['temperature']
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
-            time.sleep(i ^ 3)
+            time.sleep(i ** 3)
         else:
             logging.error("Failed to call DarkSky API")

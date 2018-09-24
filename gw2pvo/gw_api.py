@@ -18,6 +18,7 @@ class GoodWeApi:
         self.token = '{"version":"v2.0.4","client":"ios","language":"en"}'
         self.global_url = 'https://globalapi.sems.com.cn/api/'
         self.base_url = self.global_url
+        self.status = { -1 : 'Offline', 1 : 'Normal' }
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
@@ -32,7 +33,7 @@ class GoodWeApi:
         inverterData = data['inverter'][0]
         
         result = {
-            'status' : inverterData['warning_bms'],
+            'status' : self.status[inverterData['status']],
             'pgrid_w' : inverterData['out_pac'],
             'eday_kwh' : inverterData['eday'],
             'etotal_kwh' : inverterData['etotal'],
@@ -94,7 +95,7 @@ class GoodWeApi:
 
 
     def call(self, url, payload):
-        for i in range(4):
+        for i in range(1, 4):
             try:
                 headers = { 'User-Agent': 'PVMaster/2.0.4 (iPhone; iOS 11.4.1; Scale/2.00)', 'Token': self.token }
 
@@ -103,7 +104,7 @@ class GoodWeApi:
                 data = r.json()
                 logging.debug(data)
 
-                if data['msg'] == 'success' and data['data'] != None:
+                if data['msg'] == 'success' and data['data'] is not None:
                     return data['data']
                 else:
                     loginPayload = { 'account': self.account, 'pwd': self.password }
@@ -114,7 +115,7 @@ class GoodWeApi:
                     self.token = json.dumps(data['data'])
             except requests.exceptions.RequestException as exp:
                 logging.warning(exp)
-            time.sleep(i ^ 3)
+            time.sleep(i ** 3)
         else:
             logging.error("Failed to call GoodWe API")
 

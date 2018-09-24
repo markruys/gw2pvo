@@ -23,10 +23,10 @@ class PVOutputApi:
             'v2' : round(pgrid_w)
         }
 
-        if temperature != None:
+        if temperature is not None:
             payload['v5'] = temperature
         
-        if voltage != None:
+        if voltage is not None:
             payload['v6'] = voltage
 
         self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
@@ -62,7 +62,7 @@ class PVOutputApi:
             'X-Rate-Limit': '1'
         }
 
-        for i in range(3):
+        for i in range(1, 4):
             try:
                 r = requests.post(url, headers=headers, data=payload, timeout=10)
                 reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
@@ -78,7 +78,7 @@ class PVOutputApi:
                     break
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
-            time.sleep(i ^ 3)
+            time.sleep(i ** 3)
         else:
             logging.error("Failed to call PVOutput API")
 
