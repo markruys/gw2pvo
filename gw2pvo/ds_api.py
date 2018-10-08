@@ -12,7 +12,6 @@ class DarkSkyApi:
     def __init__(self, api_key):
         self.api_key = api_key
 
-
     def get_temperature(self, latitude, longitude):
         if latitude is None or longitude is None:
             return None
@@ -24,7 +23,7 @@ class DarkSkyApi:
         }
 
         url = "https://api.darksky.net/forecast/{apiKey}/{latitude},{longitude}?units=si&exclude=minutely,hourly,daily,alerts,flags".format(**data)
-                
+
         for i in range(1, 4):
             try:
                 r = requests.get(url, timeout=10)
