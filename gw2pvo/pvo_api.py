@@ -31,7 +31,7 @@ class PVOutputApi:
 
         self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
 
-    def add_day(self, data, temperatures: None):
+    def add_day(self, data, temperatures):
         # Send day data in batches of 30.
 
         for chunk in [ data[i:i + 30] for i in range(0, len(data), 30) ]:
