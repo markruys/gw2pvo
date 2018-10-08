@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import logging
 import argparse
@@ -74,7 +76,7 @@ def copy(args):
     if args.darksky_api_key:
         ds = ds_api.DarkSkyApi(args.darksky_api_key)
         temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
-    
+
     # Submit readings to PVOutput
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
     pvo.add_day(data['entries'], temperatures)
@@ -89,7 +91,7 @@ def run():
     parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=True)
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
-    parser.add_argument("--darksky-api-key", help="Dark Sky Weather API Key")
+    parser.add_argument("--darksky-api-key", help="Dark Sky Weather API key")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
