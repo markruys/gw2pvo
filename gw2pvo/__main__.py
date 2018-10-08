@@ -5,6 +5,7 @@ import locale
 import time
 from datetime import datetime
 from astral import Astral
+from gw2pvo import ds_api
 from gw2pvo import gw_api
 from gw2pvo import gw_csv
 from gw2pvo import pvo_api
@@ -31,7 +32,7 @@ def run_once(args, aver):
             return
 
     # Fetch the last reading from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_region)
+    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
     data = gw.getCurrentReadings()
 
     # Check if we want to abort when offline
@@ -56,27 +57,39 @@ def run_once(args, aver):
     else:
         last_eday_kwh = eday_kwh
 
-        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-        pvo.add_status(data['pgrid_w'], last_eday_kwh)
+    if args.darksky_api_key:
+        ds = ds_api.DarkSkyApi(args.darksky_api_key)
+        data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
+
+    pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), data['grid_voltage'])
 
 def copy(args):
     # Fetch readings from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_region)
-    data = gw.getDayReadings(datetime.strptime(args.date, "%Y-%m-%d"))
+    date = datetime.strptime(args.date, "%Y-%m-%d")
 
+    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
+    data = gw.getDayReadings(date)
+
+    if args.darksky_api_key:
+        ds = ds_api.DarkSkyApi(args.darksky_api_key)
+        temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
+    
     # Submit readings to PVOutput
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_day(data)
+    pvo.add_day(data['entries'], temperatures)
 
 def run():
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Upload GoodWe power inverter data to PVOutput.org")
     parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID', required=True)
-    parser.add_argument("--gw-region", help="Region where the equipment is installed", metavar='REGION', choices=['EU', 'AU', 'global'], default='global')
+    parser.add_argument("--gw-account", help="GoodWe account", metavar='ACCOUNT', required=True)
+    parser.add_argument("--gw-password", help="GoodWe password", metavar='PASSWORD', required=True)
     parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=True)
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
+    parser.add_argument("--darksky-api-key", help="Dark Sky Weather API Key")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')

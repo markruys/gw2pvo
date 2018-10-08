@@ -14,7 +14,7 @@ class PVOutputApi:
         self.m_api_key = api_key
 
 
-    def add_status(self, pgrid_w, eday_kwh):
+    def add_status(self, pgrid_w, eday_kwh, temperature: None, voltage: None):
         t = time.localtime()
         payload = {
             'd' : "{:04}{:02}{:02}".format(t.tm_year, t.tm_mon, t.tm_mday),
@@ -23,9 +23,15 @@ class PVOutputApi:
             'v2' : round(pgrid_w)
         }
 
+        if temperature is not None:
+            payload['v5'] = temperature
+        
+        if voltage is not None:
+            payload['v6'] = voltage
+
         self.call("https://pvoutput.org/service/r2/addstatus.jsp", payload)
 
-    def add_day(self, data):
+    def add_day(self, data, temperatures: None):
         # Send day data in batches of 30.
 
         for chunk in [ data[i:i + 30] for i in range(0, len(data), 30) ]:
@@ -39,6 +45,13 @@ class PVOutputApi:
                     str(round(reading['eday_kwh'] * 1000)),
                     str(reading['pgrid_w'])
                 ]
+
+                if temperatures is not None:
+                    fields.append('')
+                    fields.append('')
+                    temperature = list(filter(lambda x: dt.timestamp() > x['time'], temperatures))[-1]
+                    fields.append(str(temperature['temperature']))
+
                 readings.append(",".join(fields))
 
             payload = {
@@ -56,7 +69,7 @@ class PVOutputApi:
             'X-Rate-Limit': '1'
         }
 
-        for i in range(3):
+        for i in range(1, 4):
             try:
                 r = requests.post(url, headers=headers, data=payload, timeout=10)
                 reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
@@ -72,7 +85,7 @@ class PVOutputApi:
                     break
             except requests.exceptions.RequestException as arg:
                 logging.warning(arg)
-            time.sleep(3)
+            time.sleep(i ** 3)
         else:
             logging.error("Failed to call PVOutput API")
 
