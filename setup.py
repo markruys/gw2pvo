@@ -5,6 +5,10 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/markruys/gw2pvo
 """
 
+import sys
+if sys.version_info < (3,3):
+    sys.exit('Sorry, you need at least Python 3.3.0')
+
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 # To use a consistent encoding
