@@ -72,11 +72,15 @@ class PVOutputApi:
         for i in range(1, 4):
             try:
                 r = requests.post(url, headers=headers, data=payload, timeout=10)
-                reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
-                if int(r.headers['X-Rate-Limit-Remaining']) < 10:
-                    logging.warning("Only {} requests left, reset after {} seconds".format(
-                        r.headers['X-Rate-Limit-Remaining'],
-                        reset))
+                if 'X-Rate-Limit-Reset' in r.headers:
+                    reset = round(float(r.headers['X-Rate-Limit-Reset']) - time.time())
+                else:
+                    reset = 0
+                if 'X-Rate-Limit-Remaining' in r.headers:
+                    if int(r.headers['X-Rate-Limit-Remaining']) < 10:
+                        logging.warning("Only {} requests left, reset after {} seconds".format(
+                            r.headers['X-Rate-Limit-Remaining'],
+                            reset))
                 if r.status_code == 403:
                     logging.warning("Forbidden: " + r.reason)
                     time.sleep(reset + 1)
