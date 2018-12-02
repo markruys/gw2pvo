@@ -76,6 +76,8 @@ def copy(args):
     if args.darksky_api_key:
         ds = ds_api.DarkSkyApi(args.darksky_api_key)
         temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
+    else:
+        temperatures = None
 
     # Submit readings to PVOutput
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
