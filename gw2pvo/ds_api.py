@@ -45,7 +45,7 @@ class DarkSkyApi:
             'apiKey' : self.api_key,
             'latitude' : latitude,
             'longitude' : longitude,
-            'date' : date.astimezone(datetime.now().tzinfo).isoformat()
+            'date' : date.strftime('%Y-%m-%d') + 'T00:00:00',
         }
 
         url = "https://api.darksky.net/forecast/{apiKey}/{latitude},{longitude},{date}?units=si&exclude=minutely,currently,daily,alerts,flags".format(**data)
