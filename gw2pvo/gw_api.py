@@ -29,9 +29,9 @@ class GoodWeApi:
 
         # goodwe_server
         data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
-        
+
         inverterData = data['inverter'][0]
-        
+
         result = {
             'status' : self.status[inverterData['status']],
             'pgrid_w' : inverterData['out_pac'],
@@ -52,64 +52,65 @@ class GoodWeApi:
 
 
     def getDayReadings(self, date):
-        entries = []
+        date_s = date.strftime('%Y-%m-%d')
 
         payload = {
             'powerStationId' : self.system_id
         }
-
         data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+        if 'info' not in data:
+            logging.warning(date_s + " - Received bad data " + str(data))
+            return result
+
+        result = {
+            'latitude' : data['info'].get('latitude'),
+            'longitude' : data['info'].get('longitude'),
+            'entries' : []
+        }
 
         payload = {
             'powerstation_id' : self.system_id,
             'count' : 1,
-            'date' : date.strftime('%Y-%m-%d')
+            'date' : date_s
         }
-        
-        result = {
-            'latitude' : data['info'].get('latitude'),
-            'longitude' : data['info'].get('longitude')
-        }
-
         data = self.call("PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
+        if len(data) == 0:
+            logging.warning(date_s + " - Received bad data " + str(data))
+            return result
+
         eday_kwh = data[0]['p']
 
         payload = {
             'id' : self.system_id,
-            'date' : date.strftime('%Y-%m-%d')
+            'date' : date_s
         }
-
         data = self.call("PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
-        if len(data) < 2:
-            logging.warning(payload['date'] + " - Received bad data " + str(data))
-        else:
-            minutes = 0
-            eday_from_power = 0
-            for sample in data['pacs']:
-                parsed_date = datetime.strptime(sample['date'], "%m/%d/%Y %H:%M:%S")
-                next_minutes = parsed_date.hour * 60 + parsed_date.minute
-                sample['minutes'] = next_minutes - minutes
-                minutes = next_minutes
-                eday_from_power += sample['pac'] * sample['minutes']
-            factor = eday_kwh / eday_from_power
+        if 'pacs' not in data:
+            logging.warning(date_s + " - Received bad data " + str(data))
+            return result
 
-            if len(data['pacs']) == 145:
-                data.pop()
+        minutes = 0
+        eday_from_power = 0
+        for sample in data['pacs']:
+            parsed_date = datetime.strptime(sample['date'], "%m/%d/%Y %H:%M:%S")
+            next_minutes = parsed_date.hour * 60 + parsed_date.minute
+            sample['minutes'] = next_minutes - minutes
+            minutes = next_minutes
+            eday_from_power += sample['pac'] * sample['minutes']
+        factor = eday_kwh / eday_from_power if eday_from_power > 0 else 1
 
-            eday_kwh = 0
-            for sample in data['pacs']:
-                date += timedelta(minutes=sample['minutes'])
-                pgrid_w = sample['pac']
-                increase = pgrid_w * sample['minutes'] * factor
-                if increase > 0:
-                    eday_kwh += increase
-                    entries.append({
-                        'dt' : date,
-                        'pgrid_w': pgrid_w,
-                        'eday_kwh': round(eday_kwh, 3)
-                    })
-
-        result['entries'] = entries
+        eday_kwh = 0
+        for sample in data['pacs']:
+            date += timedelta(minutes=sample['minutes'])
+            pgrid_w = sample['pac']
+            increase = pgrid_w * sample['minutes'] * factor
+            if increase > 0:
+                eday_kwh += increase
+                result['entries'].append({
+                    'dt' : date,
+                    'pgrid_w': pgrid_w,
+                    'eday_kwh': round(eday_kwh, 3)
+                })
 
         return result
 
