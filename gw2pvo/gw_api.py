@@ -79,6 +79,13 @@ class GoodWeApi:
             return result
 
         eday_kwh = data[0]['p']
+        
+        # added a loop  to select correct day in case the GoodWe API unexpectedly returns figures for multiple dates
+        if len(data) > 1:
+            date_s_expected = date.strftime("%m/%d/%Y")
+            for idata in data:
+                  if(idata['d'] == date_s_expected):
+                      eday_kwh = idata['p']                
 
         payload = {
             'id' : self.system_id,
