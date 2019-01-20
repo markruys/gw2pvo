@@ -42,6 +42,16 @@ class GoodWeApi:
             'longitude' : data['info'].get('longitude')
         }
 
+        # added by PhV on 19-01-2019 to support multiple inverters per plant
+        nbInverters = len(data['inverter'])
+        if nbInverters > 1:
+            moreInverterData = data['inverter'][1:nbInverters]
+            for anotherInverterData in moreInverterData:
+                result['pgrid_w']  += anotherInverterData['out_pac']
+                result['eday_kwh']  += anotherInverterData['eday']
+                result['etotal_kwh']  += anotherInverterData['etotal']
+
+    
         message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
