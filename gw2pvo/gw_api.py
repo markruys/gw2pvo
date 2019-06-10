@@ -38,7 +38,7 @@ class GoodWeApi:
             'eday_kwh' : inverterData['eday'],
             'etotal_kwh' : inverterData['etotal'],
             'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
-            'pv_voltage' : inverterData['d']['vpv'],
+            'pv_voltage' : inverterData['d']['vpv1'],
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }
