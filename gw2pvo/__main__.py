@@ -12,7 +12,6 @@ from gw2pvo import gw_api
 from gw2pvo import gw_csv
 from gw2pvo import pvo_api
 from gw2pvo import __version__
-from gw2pvo import average
 
 __author__ = "Mark Ruys"
 __copyright__ = "Copyright 2017-2018, Mark Ruys"
@@ -21,7 +20,7 @@ __email__ = "mark@paracas.nl"
 
 last_eday_kwh = 0
 
-def run_once(args, aver):
+def run_once(args):
     global last_eday_kwh
 
     # Check if we only want to run during daylight
@@ -53,7 +52,7 @@ def run_once(args, aver):
             csv.append(data)
 
     # Submit reading to PVOutput, if they differ from the previous set
-    eday_kwh = aver.add(data['eday_kwh'])
+    eday_kwh = data['eday_kwh']
     if data['pgrid_w'] == 0 and abs(eday_kwh - last_eday_kwh) < 0.001:
         logging.debug("Ignore unchanged reading")
     else:
@@ -62,9 +61,13 @@ def run_once(args, aver):
     if args.darksky_api_key:
         ds = ds_api.DarkSkyApi(args.darksky_api_key)
         data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
+        
+    voltage = data['grid_voltage']
+    if args.pv_voltage:
+        voltage=data['pv_voltage']
 
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), data['grid_voltage'])
+    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
 
 def copy(args):
     # Fetch readings from GoodWe
@@ -96,6 +99,7 @@ def run():
     parser.add_argument("--darksky-api-key", help="Dark Sky Weather API key")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
+    parser.add_argument("--pv-voltage", help="Send pv voltage instead of grid voltage", action='store_true')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
     parser.add_argument("--city", help="Skip uploads from dusk till dawn")
     parser.add_argument('--csv', help="Append readings to a Excel compatible CSV file, DATE in the name will be replaced by the current date")
@@ -120,13 +124,9 @@ def run():
 
     startTime = datetime.now()
 
-    # The shorter the interval, the stronger we need some running average for GoodWe
-    subset_size = 4 - args.pvo_interval / 5 if args.pvo_interval else 1
-    aver = average.MovingAverage(subset_size)
-
     while True:
         try:
-            run_once(args, aver)
+            run_once(args)
         except Exception as exp:
             logging.error(exp)
 

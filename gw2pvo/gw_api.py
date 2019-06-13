@@ -18,7 +18,7 @@ class GoodWeApi:
         self.token = '{"version":"v2.0.4","client":"ios","language":"en"}'
         self.global_url = 'https://globalapi.sems.com.cn/api/'
         self.base_url = self.global_url
-        self.status = { -1 : 'Offline', 1 : 'Normal' }
+        self.status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal' }
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
@@ -38,6 +38,7 @@ class GoodWeApi:
             'eday_kwh' : inverterData['eday'],
             'etotal_kwh' : inverterData['etotal'],
             'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
+            'pv_voltage' : inverterData['d']['vpv1'],
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }

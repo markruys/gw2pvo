@@ -32,7 +32,7 @@ usage: gw2pvo [-h] --gw-station-id ID --gw-account ACCOUNT --gw-password
                    [--pvo-interval {5,10,15}]
                    [--darksky-api-key DARKSKY_API_KEY]
                    [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
-                   [--skip-offline] [--city CITY] [--csv CSV] [--version]
+                   [--pv-voltage] [--skip-offline] [--city CITY] [--csv CSV] [--version]
 
 Upload GoodWe power inverter data to PVOutput.org
 
@@ -51,6 +51,7 @@ optional arguments:
   --log {debug,info,warning,critical}
                         Set log level (default info)
   --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
+  --pv-voltage		Send pv voltage instead of grid voltage
   --skip-offline        Skip uploads when inverter is offline
   --city CITY           Skip uploads from dusk till dawn
   --csv CSV             Append readings to a Excel compatible CSV file, DATE
