@@ -51,9 +51,7 @@ class GoodWeApi:
             'load' : float(data['powerflow']['load'].rstrip("(W)"))
         }
 
-
-
-        message = "Test: {status}, {pgrid_w} W now, {eday_kwh} kWh generated today; {consumed_total} kWh consumed today; State of charge: {soc}; Bought {buy} kWh today; Sold {sell} kWh today; Meter reading at present {meter}; Current load {load}".format(**result)
+        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh generated today; {consumed_total} kWh consumed today; State of charge: {soc}; Bought {buy} kWh today; Sold {sell} kWh today; Meter reading at present {meter}; Current load {load}".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
