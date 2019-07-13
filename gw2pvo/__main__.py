@@ -67,8 +67,7 @@ def run_once(args):
         voltage=data['pv_voltage']
 
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), data['grid_voltage'], data['consumed_total'], data['load'])
-    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
+    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage, data['consumed_total'], data['load'])
 
 def copy(args):
     # Fetch readings from GoodWe
