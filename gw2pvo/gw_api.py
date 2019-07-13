@@ -31,6 +31,7 @@ class GoodWeApi:
         data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
 
         inverterData = data['inverter'][0]
+        chartData = data['energeStatisticsCharts'];
 
         result = {
             'status' : self.status[inverterData['status']],
@@ -40,10 +41,19 @@ class GoodWeApi:
             'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
             'pv_voltage' : inverterData['d']['vpv1'],
             'latitude' : data['info'].get('latitude'),
-            'longitude' : data['info'].get('longitude')
+            'longitude' : data['info'].get('longitude'),
+            'soc' : inverterData['soc'],
+            'buy' : inverterData['invert_full']['buy'],
+            'sell' : inverterData['invert_full']['seller'],
+            'meter' : inverterData['invert_full']['pmeter'],
+            # 'consumed_total' : round(inverterData['invert_full']['iday'], 2),
+            'consumed_total' : round(chartData['consumptionOfLoad'], 2),
+            'load' : float(data['powerflow']['load'].rstrip("(W)"))
         }
 
-        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
+
+
+        message = "Test: {status}, {pgrid_w} W now, {eday_kwh} kWh generated today; {consumed_total} kWh consumed today; State of charge: {soc}; Bought {buy} kWh today; Sold {sell} kWh today; Meter reading at present {meter}; Current load {load}".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
