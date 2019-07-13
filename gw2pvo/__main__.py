@@ -61,12 +61,13 @@ def run_once(args):
     if args.darksky_api_key:
         ds = ds_api.DarkSkyApi(args.darksky_api_key)
         data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
-        
+
     voltage = data['grid_voltage']
     if args.pv_voltage:
         voltage=data['pv_voltage']
 
     pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), data['grid_voltage'], data['consumed_total'], data['load'])
     pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
 
 def copy(args):
