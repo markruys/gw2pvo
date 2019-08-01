@@ -80,8 +80,8 @@ class GoodWeApi:
             return result
 
         eday_kwh = 0
-	    for day in data:
-    	    if day['d'] == date.strftime('%m/%d/%Y'):
+        for day in data:
+            if day['d'] == date.strftime('%m/%d/%Y'):
                 eday_kwh = day['p']eday_kwh = data[1]['p']
 
         payload = {
