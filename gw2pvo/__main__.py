@@ -5,7 +5,7 @@ import logging
 import argparse
 import locale
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from astral import Astral
 from gw2pvo import ds_api
 from gw2pvo import gw_api
