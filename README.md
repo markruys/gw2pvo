@@ -7,7 +7,7 @@ gw2pvo is a command line tool to upload solar data from a GoodWe power inverter 
 
 You need to have Python 3 and pip installed. Then:
 
-    sudo pip3 install https://github.com/markruys/gw2pvo/releases/download/1.2.1/gw2pvo-1.2.1.tar.gz
+    sudo pip3 install https://github.com/markruys/gw2pvo/releases/download/1.2.2/gw2pvo-1.2.2.tar.gz
 
 Next determine the Station ID from the GoodWe site as follows. Open the [Sems Portal](https://www.semsportal.com). The Plant Status will reveal the Station ID in the URL. Example:
 
@@ -91,7 +91,7 @@ Description=Read GoodWe inverter and upload data to PVOutput.org
 
 [Service]
 WorkingDirectory=/home/gw2pvo
-ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
+ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5 --skip-offline
 Restart=always
 RestartSec=300
 User=gw2pvo
