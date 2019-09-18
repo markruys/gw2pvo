@@ -95,10 +95,13 @@ ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-p
 Restart=always
 RestartSec=300
 User=gw2pvo
+Environment="TZ=Etc/UTC"
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+Make sure you set your Timezone (the TZ line) to the appropriate setting for your locale. A list is typically located in `/usr/share/zoneinfo/`.
 
 Store the file as ``/etc/systemd/system/gw2pvo.service`` and run:
 
