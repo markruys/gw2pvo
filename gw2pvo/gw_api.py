@@ -62,6 +62,7 @@ class GoodWeApi:
 
     def getDayReadings(self, date):
         date_s = date.strftime('%Y-%m-%d')
+        logging.warning("Getting data for " + str(date_s))
 
         payload = {
             'powerStationId' : self.system_id
@@ -134,7 +135,7 @@ class GoodWeApi:
                 data = r.json()
                 logging.debug(data)
 
-                if data['msg'] == 'success' and data['data'] is not None:
+                if (data['msg'] == 'success' or data['msg'] == "Success") and data['data'] is not None:
                     return data['data']
                 else:
                     loginPayload = { 'account': self.account, 'pwd': self.password }
