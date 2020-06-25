@@ -15,8 +15,8 @@ class GoodWeApi:
         self.system_id = system_id
         self.account = account
         self.password = password
-        self.token = '{"version":"v2.0.4","client":"ios","language":"en"}'
-        self.global_url = 'https://globalapi.sems.com.cn/api/'
+        self.token = '{"version":"v3.1","client":"ios","language":"en"}'
+        self.global_url = 'https://semsportal.com/api/'
         self.base_url = self.global_url
         self.status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal' }
 
@@ -119,7 +119,7 @@ class GoodWeApi:
     def call(self, url, payload):
         for i in range(1, 4):
             try:
-                headers = { 'User-Agent': 'PVMaster/2.0.4 (iPhone; iOS 11.4.1; Scale/2.00)', 'Token': self.token }
+                headers = { 'User-Agent': 'SEMS Portal/3.1 (iPhone; iOS 13.5.1; Scale/2.00)', 'Token': self.token }
 
                 r = requests.post(self.base_url + url, headers=headers, data=payload, timeout=10)
                 r.raise_for_status()
@@ -130,7 +130,7 @@ class GoodWeApi:
                     return data['data']
                 else:
                     loginPayload = { 'account': self.account, 'pwd': self.password }
-                    r = requests.post(self.global_url + 'v1/Common/CrossLogin', headers=headers, data=loginPayload, timeout=10)
+                    r = requests.post(self.global_url + 'v2/Common/CrossLogin', headers=headers, data=loginPayload, timeout=10)
                     r.raise_for_status()
                     data = r.json()
                     self.base_url = data['api']
