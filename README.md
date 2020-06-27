@@ -7,13 +7,15 @@ gw2pvo is a command line tool to upload solar data from a GoodWe power inverter 
 
 You need to have Python 3 and pip installed. Then:
 
-    sudo pip3 install https://github.com/markruys/gw2pvo/releases/download/1.2.1/gw2pvo-1.2.1.tar.gz
+```shell
+sudo pip3 install https://github.com/markruys/gw2pvo/releases/download/1.3.0/gw2pvo-1.3.0.tar.gz
+```
 
 Next determine the Station ID from the GoodWe site as follows. Open the [Sems Portal](https://www.semsportal.com). The Plant Status will reveal the Station ID in the URL. Example:
 
     https://www.semsportal.com/powerstation/powerstatussnmin/9a6415bf-cdcc-46af-b393-2b442fa89a7f
 
-Then the Station ID is `9a6415bf-cdcc-46af-b393-2b442fa89a7f`.
+So the Station ID is `9a6415bf-cdcc-46af-b393-2b442fa89a7f`.
 
 Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a device and enable the API. From PVOutput you need:
 
@@ -26,7 +28,7 @@ Optionally, for actual weather information you can get a (free) [Dark Sky API](h
 
 ## Usage
 
-```
+```shell
 usage: gw2pvo [-h] --gw-station-id ID --gw-account ACCOUNT --gw-password
                    PASSWORD --pvo-system-id ID --pvo-api-key KEY
                    [--pvo-interval {5,10,15}]
@@ -61,13 +63,13 @@ optional arguments:
 
 ### Examples
 
-```
+```shell
 gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --log debug
 ```
 
 If you want to save readings in a daily CSV file:
 
-```
+```shell
 gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --csv "Solar DATE.csv"
 ```
 
@@ -85,7 +87,7 @@ The inverter updates goodwe-power.com each 8 minutes. The API gives resolution f
 
 If you run gw2pvo on a Systemd based Linux, you could install the script as a service, like:
 
-```
+```ini
 [Unit]
 Description=Read GoodWe inverter and upload data to PVOutput.org
 
@@ -102,17 +104,19 @@ WantedBy=multi-user.target
 
 Store the file as ``/etc/systemd/system/gw2pvo.service`` and run:
 
-    sudo useradd -m gw2pvo
-    sudo systemctl enable gw2pvo
-    sudo systemctl start gw2pvo
-    sudo systemctl status gw2pvo
-    sudo journalctl -u gw2pvo -f
+```shell
+sudo useradd -m gw2pvo
+sudo systemctl enable gw2pvo
+sudo systemctl start gw2pvo
+sudo systemctl status gw2pvo
+sudo journalctl -u gw2pvo -f
+```
 
 ## Recover missed data
 
 You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
 
-```
+```shell
 gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --date YYYY-MM-DD
 ```
 
