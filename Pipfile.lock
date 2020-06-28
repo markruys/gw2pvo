@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0e2f7e7cb3fdcbb03d2278f9d8f3803103dd84e2807aaa975f0751308d431380"
+            "sha256": "ffe071225e7b4fcce25c485b08d8b322c6c4e1cadaa19572b51ff43901fe5f55"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -37,6 +37,10 @@
                 "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
             ],
             "version": "==3.0.4"
+        },
+        "gw2pvo": {
+            "editable": true,
+            "path": "."
         },
         "idna": {
             "hashes": [
