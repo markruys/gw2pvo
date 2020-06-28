@@ -6,7 +6,9 @@ import argparse
 import locale
 import time
 from datetime import datetime
-from astral import Astral
+from astral import LocationInfo
+from astral.geocoder import lookup, database
+from astral.location import Location
 from gw2pvo import ds_api
 from gw2pvo import gw_api
 from gw2pvo import gw_csv
@@ -25,10 +27,9 @@ def run_once(args):
 
     # Check if we only want to run during daylight
     if args.city:
-        a = Astral()
-        sun = a[args.city].sun(local=True)
+        l = Location(lookup(args.city, database()))
         now = datetime.time(datetime.now())
-        if now < sun['dawn'].time() or now > sun['dusk'].time():
+        if now < l.dawn().time() or now > l.dusk().time():
             logging.debug("Skipped upload as it's night")
             return
 
