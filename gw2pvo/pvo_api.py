@@ -13,7 +13,6 @@ class PVOutputApi:
         self.m_system_id = system_id
         self.m_api_key = api_key
 
-
     def add_status(self, pgrid_w, eday_kwh, temperature, voltage):
         t = time.localtime()
         payload = {

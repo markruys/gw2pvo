@@ -16,7 +16,7 @@ from gw2pvo import pvo_api
 from gw2pvo import __version__
 
 __author__ = "Mark Ruys"
-__copyright__ = "Copyright 2017-2018, Mark Ruys"
+__copyright__ = "Copyright 2017-2020, Mark Ruys"
 __license__ = "MIT"
 __email__ = "mark@paracas.nl"
 
@@ -62,7 +62,7 @@ def run_once(args):
     if args.darksky_api_key:
         ds = ds_api.DarkSkyApi(args.darksky_api_key)
         data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
-        
+
     voltage = data['grid_voltage']
     if args.pv_voltage:
         voltage=data['pv_voltage']
@@ -88,7 +88,6 @@ def copy(args):
     pvo.add_day(data['entries'], temperatures)
 
 def run():
-
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Upload GoodWe power inverter data to PVOutput.org")
     parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID', required=True)
@@ -120,7 +119,10 @@ def run():
 
     # Check if we want to copy old data
     if args.date:
-        copy(args)
+        try:
+            copy(args)
+        except Exception as exp:
+            logging.error(exp)
         sys.exit()
 
     startTime = datetime.now()

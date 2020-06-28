@@ -51,7 +51,6 @@ class GoodWeApi:
 
         return result
 
-
     def getDayReadings(self, date):
         date_s = date.strftime('%Y-%m-%d')
 
@@ -115,31 +114,45 @@ class GoodWeApi:
 
         return result
 
-
     def call(self, url, payload):
         for i in range(1, 4):
             try:
-                headers = { 'User-Agent': 'SEMS Portal/3.1 (iPhone; iOS 13.5.1; Scale/2.00)', 'Token': self.token }
+                headers = {
+                    'User-Agent': 'SEMS Portal/3.1 (iPhone; iOS 13.5.1; Scale/2.00)',
+                    'Token': self.token,
+                }
 
                 r = requests.post(self.base_url + url, headers=headers, data=payload, timeout=10)
                 r.raise_for_status()
                 data = r.json()
                 logging.debug(data)
 
-                if data['msg'] == 'success' and data['data'] is not None:
+                try:
+                    code = int(data['code'])
+                except ValueError:
+                    raise Exception("Failed to call GoodWe API (no code)")
+
+                if code == 0 and data['data'] is not None:
                     return data['data']
-                else:
-                    loginPayload = { 'account': self.account, 'pwd': self.password }
+                elif code == 100001:
+                    loginPayload = {
+                        'account': self.account,
+                        'pwd': self.password,
+                    }
                     r = requests.post(self.global_url + 'v2/Common/CrossLogin', headers=headers, data=loginPayload, timeout=10)
                     r.raise_for_status()
                     data = r.json()
+                    if 'api' not in data:
+                        raise Exception(data['msg'])
                     self.base_url = data['api']
                     self.token = json.dumps(data['data'])
+                else:
+                    raise Exception("Failed to call GoodWe API (code {})".format(code))
             except requests.exceptions.RequestException as exp:
                 logging.warning(exp)
             time.sleep(i ** 3)
         else:
-            logging.error("Failed to call GoodWe API")
+            raise Exception("Failed to call GoodWe API (too many retries)")
 
         return {}
 
