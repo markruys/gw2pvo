@@ -67,8 +67,12 @@ def run_once(args):
     if args.pv_voltage:
         voltage=data['pv_voltage']
 
-    pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
+    if args.pvo_system_id and args.pvo_api_key:
+        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+        pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
+    else:
+        logging.debug(str(data))
+        logging.warning("Missing PVO id and/or key")
 
 def copy(args):
     # Fetch readings from GoodWe
@@ -77,15 +81,24 @@ def copy(args):
     gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
     data = gw.getDayReadings(date)
 
-    if args.darksky_api_key:
-        ds = ds_api.DarkSkyApi(args.darksky_api_key)
-        temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
-    else:
-        temperatures = None
+    if args.pvo_system_id and args.pvo_api_key:
+        if args.darksky_api_key:
+            ds = ds_api.DarkSkyApi(args.darksky_api_key)
+            temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
+        else:
+            temperatures = None
 
-    # Submit readings to PVOutput
-    pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
-    pvo.add_day(data['entries'], temperatures)
+        # Submit readings to PVOutput
+        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+        pvo.add_day(data['entries'], temperatures)
+    else:
+        for entry in data['entries']:
+            logging.info("{}: {:6.0f} W {:6.2f} kWh".format(
+                entry['dt'],
+                entry['pgrid_w'],
+                entry['eday_kwh'],
+            ))
+        logging.warning("Missing PVO id and/or key")
 
 def run():
     # Parse command line arguments
@@ -93,8 +106,8 @@ def run():
     parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID', required=True)
     parser.add_argument("--gw-account", help="GoodWe account", metavar='ACCOUNT', required=True)
     parser.add_argument("--gw-password", help="GoodWe password", metavar='PASSWORD', required=True)
-    parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=True)
-    parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=True)
+    parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID', required=not True)
+    parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY', required=not True)
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
     parser.add_argument("--darksky-api-key", help="Dark Sky Weather API key")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
