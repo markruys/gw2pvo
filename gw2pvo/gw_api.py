@@ -51,66 +51,75 @@ class GoodWeApi:
 
         return result
 
-    def getDayReadings(self, date):
-        date_s = date.strftime('%Y-%m-%d')
+    def getActualKwh(self, date):
+        payload = {
+            'powerstation_id' : self.system_id,
+            'count' : 1,
+            'date' : date.strftime('%Y-%m-%d')
+        }
+        data = self.call("v2/PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
+        if not data:
+            logging.warning("GetPowerStationPowerAndIncomeByDay missing data")
+            return 0
 
+        eday_kwh = 0
+        for day in data:
+            if day['d'] == date.strftime('%m/%d/%Y'):
+                eday_kwh = day['p']
+
+        return eday_kwh
+
+    def getLocation(self):
         payload = {
             'powerStationId' : self.system_id
         }
         data = self.call("v2/PowerStation/GetMonitorDetailByPowerstationId", payload)
         if 'info' not in data:
-            logging.warning(date_s + " - Received bad data " + str(data))
-            return result
+            logging.warning("GetMonitorDetailByPowerstationId returned bad data: " + str(data))
+            return {}
 
-        result = {
+        return {
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude'),
-            'entries' : []
         }
 
-        payload = {
-            'powerstation_id' : self.system_id,
-            'count' : 1,
-            'date' : date_s
-        }
-        data = self.call("v2/PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
-        if len(data) == 0:
-            logging.warning(date_s + " - Received bad data " + str(data))
-            return result
-
-        eday_kwh = data[0]['p']
-
+    def getDayPac(self, date):
         payload = {
             'id' : self.system_id,
-            'date' : date_s
+            'date' : date.strftime('%Y-%m-%d')
         }
         data = self.call("v2/PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
         if 'pacs' not in data:
-            logging.warning(date_s + " - Received bad data " + str(data))
-            return result
+            logging.warning("GetPowerStationPacByDayForApp returned bad data: " + str(data))
+            return []
 
-        minutes = 0
-        eday_from_power = 0
-        for sample in data['pacs']:
+        return data['pacs']
+
+    def getDayReadings(self, date):
+        result = self.getLocation()
+        pacs = self.getDayPac(date)
+
+        hours = 0
+        kwh = 0
+        result['entries'] = []
+        for sample in pacs:
             parsed_date = datetime.strptime(sample['date'], "%m/%d/%Y %H:%M:%S")
-            next_minutes = parsed_date.hour * 60 + parsed_date.minute
-            sample['minutes'] = next_minutes - minutes
-            minutes = next_minutes
-            eday_from_power += sample['pac'] * sample['minutes']
-        factor = eday_kwh / eday_from_power if eday_from_power > 0 else 1
-
-        eday_kwh = 0
-        for sample in data['pacs']:
-            date += timedelta(minutes=sample['minutes'])
+            next_hours = parsed_date.hour + parsed_date.minute / 60
             pgrid_w = sample['pac']
-            increase = pgrid_w * sample['minutes'] * factor
-            if increase > 0:
-                eday_kwh += increase
+            if pgrid_w > 0:
+                kwh += pgrid_w / 1000 * (next_hours - hours)
                 result['entries'].append({
-                    'dt' : date,
+                    'dt' : parsed_date,
                     'pgrid_w': pgrid_w,
-                    'eday_kwh': round(eday_kwh, 3)
+                    'eday_kwh': round(kwh, 3)
                 })
+            hours = next_hours
+
+        eday_kwh = self.getActualKwh(date)
+        if eday_kwh > 0:
+            correction = eday_kwh / kwh
+            for sample in result['entries']:
+                sample['eday_kwh'] *= correction
 
         return result
 
