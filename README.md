@@ -128,4 +128,5 @@ Michaël Hompus created a [Docker container](https://hub.docker.com/r/energy164/
 
 ## Disclaimer
 
-GoodWe access is based on the undocumented API used by mobile apps. It could be very well that at a certain point GoodWe decides to alter or disable the API.
+GoodWe access is based on the Chinese Sems Swagger documentation: [global](http://globalapi.sems.com.cn:82/swagger/ui/index), [Europe](http://eu.semsportal.com:82/swagger/ui/index#). It could be very well that at a certain point GoodWe decides to alter or disable the API.
+

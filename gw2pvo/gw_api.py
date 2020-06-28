@@ -28,7 +28,7 @@ class GoodWeApi:
         }
 
         # goodwe_server
-        data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+        data = self.call("v2/PowerStation/GetMonitorDetailByPowerstationId", payload)
 
         inverterData = data['inverter'][0]
 
@@ -57,7 +57,7 @@ class GoodWeApi:
         payload = {
             'powerStationId' : self.system_id
         }
-        data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+        data = self.call("v2/PowerStation/GetMonitorDetailByPowerstationId", payload)
         if 'info' not in data:
             logging.warning(date_s + " - Received bad data " + str(data))
             return result
@@ -73,7 +73,7 @@ class GoodWeApi:
             'count' : 1,
             'date' : date_s
         }
-        data = self.call("PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
+        data = self.call("v2/PowerStationMonitor/GetPowerStationPowerAndIncomeByDay", payload)
         if len(data) == 0:
             logging.warning(date_s + " - Received bad data " + str(data))
             return result
@@ -84,7 +84,7 @@ class GoodWeApi:
             'id' : self.system_id,
             'date' : date_s
         }
-        data = self.call("PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
+        data = self.call("v2/PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
         if 'pacs' not in data:
             logging.warning(date_s + " - Received bad data " + str(data))
             return result
