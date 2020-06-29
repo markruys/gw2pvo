@@ -18,7 +18,10 @@ class GoodWeApi:
         self.token = '{"version":"v3.1","client":"ios","language":"en"}'
         self.global_url = 'https://semsportal.com/api/'
         self.base_url = self.global_url
-        self.status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal' }
+
+    def statusText(self, status):
+        labels = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal', 2: 'Fault' }
+        return labels[status] if status in labels else 'Unknown'
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
@@ -26,24 +29,43 @@ class GoodWeApi:
         payload = {
             'powerStationId' : self.system_id
         }
-
-        # goodwe_server
         data = self.call("v2/PowerStation/GetMonitorDetailByPowerstationId", payload)
 
-        inverterData = data['inverter'][0]
-
         result = {
-            'status' : self.status[inverterData['status']],
-            'pgrid_w' : inverterData['out_pac'],
-            'eday_kwh' : inverterData['eday'],
-            'etotal_kwh' : inverterData['etotal'],
-            'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
-            'pv_voltage' : inverterData['d']['vpv1'],
+            'status' : 'Unknown',
+            'pgrid_w' : 0,
+            'eday_kwh' : 0,
+            'etotal_kwh' : 0,
+            'grid_voltage' : 0,
+            'pv_voltage' : 0,
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }
 
-        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
+        count = 0
+        for inverterData in data['inverter']:
+            status = self.statusText(inverterData['status'])
+            if status == 'Normal':
+                result['status'] = status
+                result['pgrid_w'] += inverterData['out_pac']
+                result['grid_voltage'] += self.parseValue(inverterData['output_voltage'], 'V')
+                result['pv_voltage'] += inverterData['d']['vpv1']
+                count += 1
+            result['eday_kwh'] += inverterData['eday']
+            result['etotal_kwh'] += inverterData['etotal']
+        if count > 0:
+            # These values should not be the sum, but the average
+            result['grid_voltage'] /= count
+            result['pv_voltage'] /= count
+        elif len(data['inverter']) > 0:
+            # We have no online inverters, then just pick the first
+            inverterData = data['inverter'][0]
+            result['status'] = self.statusText(inverterData['status'])
+            result['pgrid_w'] = inverterData['out_pac']
+            result['grid_voltage'] = self.parseValue(inverterData['output_voltage'], 'V')
+            result['pv_voltage'] = inverterData['d']['vpv1']
+
+        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today, {etotal_kwh} kWh all time, {grid_voltage} V grid, {pv_voltage} V PV".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
