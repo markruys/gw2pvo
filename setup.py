@@ -5,10 +5,6 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/markruys/gw2pvo
 """
 
-import sys
-if sys.version_info < (3,3):
-    sys.exit('Sorry, you need at least Python 3.3.0')
-
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 # To use a consistent encoding
@@ -59,9 +55,9 @@ setup(
         'License :: OSI Approved :: MIT License',
 
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 
     # What does your project relate to?
@@ -79,7 +75,10 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['astral', 'requests'],
+    install_requires=['astral>=2', 'requests'],
+
+    # Astral >=2 requires Python>=3.6
+    python_requires='>=3.6',
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
