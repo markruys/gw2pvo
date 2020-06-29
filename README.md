@@ -93,7 +93,7 @@ Description=Read GoodWe inverter and upload data to PVOutput.org
 
 [Service]
 WorkingDirectory=/home/gw2pvo
-ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
+ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5 --skip-offline
 Restart=always
 RestartSec=300
 User=gw2pvo
