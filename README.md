@@ -126,7 +126,11 @@ Beware that the date parameter must be not be older than 14 days from the curren
 
 Michaël Hompus created a [Docker container](https://hub.docker.com/r/energy164/gw2pvo/) ([Github](https://github.com/eNeRGy164/gw2pvo-docker)) to run gw2pvo.
 
-## Disclaimer
+## Disclaimer and warrenty
 
-GoodWe access is based on the Chinese Sems Swagger documentation: [global](http://globalapi.sems.com.cn:82/swagger/ui/index), [Europe](http://eu.semsportal.com:82/swagger/ui/index#). It could be very well that at a certain point GoodWe decides to alter or disable the API.
+None and none.
+
+Gw2pvo is *not* an official software from GoodWe/Sems and it is not endorsed or supported by this company. This library has been written as a personal work. Feel free to improve or adapt it to your own needs.
+
+GoodWe API access is based on the Chinese Sems Swagger documentation: [global](http://globalapi.sems.com.cn:82/swagger/ui/index), [Europe](http://eu.semsportal.com:82/swagger/ui/index#). It could be very well that at a certain point GoodWe decides to alter or disable the API.
 
