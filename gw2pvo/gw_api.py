@@ -34,8 +34,10 @@ class GoodWeApi:
 
         pv_voltages = [
             inverterData['d']['vpv' + str(i)]
-            for i in range(1,5)
-            if inverterData['d']['vpv' + str(i)] is not None and inverterData['d']['vpv' + str(i)] < 6553
+            for i in range(1, 5)
+            if 'vpv' + str(i) in inverterData['d']
+            if inverterData['d']['vpv' + str(i)]
+            if inverterData['d']['vpv' + str(i)] < 6553
         ]
 
         result = {
