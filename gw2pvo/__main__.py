@@ -17,6 +17,7 @@ from astral.location import Location
 
 from gw2pvo import ds_api
 from gw2pvo import gw_api
+from gw2pvo import netatmo_api
 from gw2pvo import gw_csv
 from gw2pvo import pvo_api
 from gw2pvo import __version__
@@ -28,6 +29,24 @@ __email__ = "mark@paracas.nl"
 __doc__ = "Upload GoodWe power inverter data to PVOutput.org"
 
 last_eday_kwh = 0
+
+def get_temperature(settings, latitude, longitude):
+    if settings.netatmo_username and settings.netatmo_password and settings.netatmo_client_id and settings.netatmo_client_secret:
+        netatmo = netatmo_api.NetatmoApi(
+            settings.netatmo_username,
+            settings.netatmo_password,
+            settings.netatmo_client_id,
+            settings.netatmo_client_secret,
+        )
+        netatmo.authorize()
+        if settings.netatmo_device_id:
+            return netatmo.get_device_temperature(settings.netatmo_device_id)
+        else:
+            return netatmo.get_location_temperature(latitude, longitude)
+    elif settings.darksky_api_key:
+        ds = ds_api.DarkSkyApi(settings.darksky_api_key)
+        return ds.get_temperature(latitude, longitude)
+    return None
 
 def run_once(settings):
     global last_eday_kwh
@@ -66,9 +85,10 @@ def run_once(settings):
     else:
         last_eday_kwh = eday_kwh
 
-    if settings.darksky_api_key:
-        ds = ds_api.DarkSkyApi(settings.darksky_api_key)
-        data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
+    temperature = get_temperature(settings, data['latitude'], data['longitude'])
+    if temperature:
+        logging.info("Current local temperature is {:.1f} °C".format(temperature))
+        data['temperature'] = temperature
 
     voltage = data['grid_voltage']
     if settings.pv_voltage:
@@ -138,6 +158,11 @@ def run():
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY')
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
     parser.add_argument("--darksky-api-key", help="Dark Sky Weather API key")
+    parser.add_argument("--netatmo-username", help="Netatmo username")
+    parser.add_argument("--netatmo-password", help="Netatmo password")
+    parser.add_argument("--netatmo-client-id", help="Netatmo OAuth client id")
+    parser.add_argument("--netatmo-client-secret", help="Netatmo OAuth client secret")
+    parser.add_argument("--netatmo-device-id", help="Netatmo device id")
     parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--pv-voltage", help="Send pv voltage instead of grid voltage", action='store_true')

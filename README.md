@@ -22,6 +22,12 @@ Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a devi
   1. The API Key
   2. The System Id of your device
 
+### Netatmo
+
+In case you have some Netatmo weather station nearby, you can use it to fetch the local temperature. First you need to create an (free) account at [developers portal](https://dev.netatmo.com/). Next create an app. This gives you a username, password, client_id, and a client_secret, which you need to supply to `gw2pvo`.
+
+You have the option to either let `gw2pvo` find the nearest public weather station, or to select one yourself.
+
 ### Dark Sky
 
 Optionally, for actual weather information you can get a (free) [Dark Sky API](https://darksky.net/dev) account. Register and get 1,000 free calls per day. Note that Dark Sky will [shut down](https://blog.darksky.net/dark-sky-has-a-new-home/) it's API in 2021 and does not accept new signups anymore.
@@ -34,6 +40,11 @@ usage: gw2pvo [-h] [--config FILE] [--gw-station-id ID]
                    [--pvo-system-id ID] [--pvo-api-key KEY]
                    [--pvo-interval {5,10,15}]
                    [--darksky-api-key DARKSKY_API_KEY]
+                   [--netatmo-username NETATMO_USERNAME]
+                   [--netatmo-password NETATMO_PASSWORD]
+                   [--netatmo-client-id NETATMO_CLIENT_ID]
+                   [--netatmo-client-secret NETATMO_CLIENT_SECRET]
+                   [--netatmo-device-id NETATMO_DEVICE_ID]
                    [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
                    [--pv-voltage] [--skip-offline] [--city CITY] [--csv CSV]
                    [--version]
@@ -53,6 +64,16 @@ optional arguments:
                         PVOutput interval in minutes
   --darksky-api-key DARKSKY_API_KEY
                         Dark Sky Weather API key
+  --netatmo-username NETATMO_USERNAME
+                        Netatmo username
+  --netatmo-password NETATMO_PASSWORD
+                        Netatmo password
+  --netatmo-client-id NETATMO_CLIENT_ID
+                        Netatmo OAuth client id
+  --netatmo-client-secret NETATMO_CLIENT_SECRET
+                        Netatmo OAuth client secret
+  --netatmo-device-id NETATMO_DEVICE_ID
+                        Netatmo device id
   --log {debug,info,warning,critical}
                         Set log level (default info)
   --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
