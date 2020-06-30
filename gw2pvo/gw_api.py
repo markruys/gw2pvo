@@ -23,6 +23,16 @@ class GoodWeApi:
         labels = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal', 2: 'Fault' }
         return labels[status] if status in labels else 'Unknown'
 
+    def calcPvVoltage(self, data):
+        pv_voltages = [
+            data['vpv' + str(i)]
+            for i in range(1, 5)
+            if 'vpv' + str(i) in data
+            if data['vpv' + str(i)]
+            if data['vpv' + str(i)] < 6553
+        ]
+        return round(sum(pv_voltages), 1)
+
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
 
@@ -49,7 +59,7 @@ class GoodWeApi:
                 result['status'] = status
                 result['pgrid_w'] += inverterData['out_pac']
                 result['grid_voltage'] += self.parseValue(inverterData['output_voltage'], 'V')
-                result['pv_voltage'] += inverterData['d']['vpv1']
+                result['pv_voltage'] += self.calcPvVoltage(inverterData['d'])
                 count += 1
             result['eday_kwh'] += inverterData['eday']
             result['etotal_kwh'] += inverterData['etotal']
@@ -63,7 +73,7 @@ class GoodWeApi:
             result['status'] = self.statusText(inverterData['status'])
             result['pgrid_w'] = inverterData['out_pac']
             result['grid_voltage'] = self.parseValue(inverterData['output_voltage'], 'V')
-            result['pv_voltage'] = inverterData['d']['vpv1']
+            result['pv_voltage'] = self.calcPvVoltage(inverterData['d'])
 
         message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today, {etotal_kwh} kWh all time, {grid_voltage} V grid, {pv_voltage} V PV".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':

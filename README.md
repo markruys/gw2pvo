@@ -22,24 +22,27 @@ Furthermore, you need a (free) [PVOutput](PVOutput.org) account. Register a devi
   1. The API Key
   2. The System Id of your device
 
-Optionally, for actual weather information you can get a (free) [Dark Sky API](https://darksky.net/dev) account. Register and get 1,000 free calls per day. From DarkSky you need:
+### Dark Sky
 
-  1. Secret API Key
+Optionally, for actual weather information you can get a (free) [Dark Sky API](https://darksky.net/dev) account. Register and get 1,000 free calls per day. Note that Dark Sky will [shut down](https://blog.darksky.net/dark-sky-has-a-new-home/) it's API in 2021 and does not accept new signups anymore.
 
 ## Usage
 
 ```shell
-usage: gw2pvo [-h] --gw-station-id ID --gw-account ACCOUNT --gw-password
-                   PASSWORD --pvo-system-id ID --pvo-api-key KEY
+usage: gw2pvo [-h] [--config FILE] [--gw-station-id ID]
+                   [--gw-account ACCOUNT] [--gw-password PASSWORD]
+                   [--pvo-system-id ID] [--pvo-api-key KEY]
                    [--pvo-interval {5,10,15}]
                    [--darksky-api-key DARKSKY_API_KEY]
                    [--log {debug,info,warning,critical}] [--date YYYY-MM-DD]
-                   [--pv-voltage] [--skip-offline] [--city CITY] [--csv CSV] [--version]
+                   [--pv-voltage] [--skip-offline] [--city CITY] [--csv CSV]
+                   [--version]
 
 Upload GoodWe power inverter data to PVOutput.org
 
 optional arguments:
   -h, --help            show this help message and exit
+  --config FILE         Specify config file
   --gw-station-id ID    GoodWe station ID
   --gw-account ACCOUNT  GoodWe account
   --gw-password PASSWORD
@@ -53,7 +56,7 @@ optional arguments:
   --log {debug,info,warning,critical}
                         Set log level (default info)
   --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
-  --pv-voltage		Send pv voltage instead of grid voltage
+  --pv-voltage          Send pv voltage instead of grid voltage
   --skip-offline        Skip uploads when inverter is offline
   --city CITY           Skip uploads from dusk till dawn
   --csv CSV             Append readings to a Excel compatible CSV file, DATE
@@ -75,6 +78,30 @@ gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-sy
 
 Off course replace GWID, ACCOUNT, PVOID, PASSWORD, and KEY for the proper values. DATE will be automatically substituted by the current date.
 
+### Config file
+
+It is more secure to define credentials in a config file instead of adding it to the command line. E.g. if you created `gw2pvo.cfg` as follows:
+
+```ini
+[Defaults]
+gw_station_id = ...
+gw_account = ...
+gw_password = ...
+
+pvo_api_key = ...
+pvo_system_id = ...
+
+darksky_api_key = ...
+```
+
+Then this will also upload your inverter data to PVOutput:
+
+```shell
+gw2pvo --config gw2pvo.cfg --log debug
+```
+
+You can add any argument setting to the config file as you like.
+
 ## Automatic uploads
 
 The power graph on PVOutput is not based on the power reading from GoodWe, but on the amount of energy produced this day. This has the advantage that it does not matter if you skip one or more readings.
@@ -93,7 +120,7 @@ Description=Read GoodWe inverter and upload data to PVOutput.org
 
 [Service]
 WorkingDirectory=/home/gw2pvo
-ExecStart=/usr/local/bin/gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --pvo-interval 5
+ExecStart=/usr/local/bin/gw2pvo --config /etc/gw2pvo.cfg --pvo-interval 5 --skip-offline
 Restart=always
 RestartSec=300
 User=gw2pvo
@@ -117,7 +144,7 @@ sudo journalctl -u gw2pvo -f
 You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
 
 ```shell
-gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --date YYYY-MM-DD
+gw2pvo --config gw2pvo.cfg --date YYYY-MM-DD
 ```
 
 Beware that the date parameter must be not be older than 14 days from the current date. In donation mode, not more than 90 days.
@@ -126,7 +153,11 @@ Beware that the date parameter must be not be older than 14 days from the curren
 
 Michaël Hompus created a [Docker container](https://hub.docker.com/r/energy164/gw2pvo/) ([Github](https://github.com/eNeRGy164/gw2pvo-docker)) to run gw2pvo.
 
-## Disclaimer
+## Disclaimer and warrenty
 
-GoodWe access is based on the Chinese Sems Swagger documentation: [global](http://globalapi.sems.com.cn:82/swagger/ui/index), [Europe](http://eu.semsportal.com:82/swagger/ui/index#). It could be very well that at a certain point GoodWe decides to alter or disable the API.
+Gw2pvo is *not* an official software from GoodWe/Sems and it is not endorsed or supported by this company. Gw2pvo has been written as a personal work. Feel free to improve or adapt it to your own needs.
+
+GoodWe API access is based on the Chinese Sems Swagger documentation: [global](http://globalapi.sems.com.cn:82/swagger/ui/index), [Europe](http://eu.semsportal.com:82/swagger/ui/index#). It could be very well that at a certain point GoodWe decides to alter or disable the API.
+
+The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 

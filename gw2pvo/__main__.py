@@ -9,6 +9,7 @@ import argparse
 import locale
 import time
 from datetime import datetime
+from configparser import ConfigParser
 
 from astral import LocationInfo
 from astral.geocoder import lookup, database
@@ -24,37 +25,38 @@ __author__ = "Mark Ruys"
 __copyright__ = "Copyright 2017-2020, Mark Ruys"
 __license__ = "MIT"
 __email__ = "mark@paracas.nl"
+__doc__ = "Upload GoodWe power inverter data to PVOutput.org"
 
 last_eday_kwh = 0
 
-def run_once(args):
+def run_once(settings):
     global last_eday_kwh
 
     # Check if we only want to run during daylight
-    if args.city:
-        l = Location(lookup(args.city, database()))
+    if settings.city:
+        l = Location(lookup(settings.city, database()))
         now = datetime.time(datetime.now())
         if now < l.dawn().time() or now > l.dusk().time():
             logging.debug("Skipped upload as it's night")
             return
 
     # Fetch the last reading from GoodWe
-    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
+    gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
     data = gw.getCurrentReadings()
 
     # Check if we want to abort when offline
-    if args.skip_offline:
+    if settings.skip_offline:
         if data['status'] == 'Offline':
             logging.debug("Skipped upload as the inverter is offline")
             return
 
     # Append reading to CSV file
-    if args.csv:
+    if settings.csv:
         if data['status'] == 'Offline':
             logging.debug("Don't append offline data to CSV file")
         else:
             locale.setlocale(locale.LC_ALL, locale.getlocale())
-            csv = gw_csv.GoodWeCSV(args.csv)
+            csv = gw_csv.GoodWeCSV(settings.csv)
             csv.append(data)
 
     # Submit reading to PVOutput, if they differ from the previous set
@@ -64,37 +66,37 @@ def run_once(args):
     else:
         last_eday_kwh = eday_kwh
 
-    if args.darksky_api_key:
-        ds = ds_api.DarkSkyApi(args.darksky_api_key)
+    if settings.darksky_api_key:
+        ds = ds_api.DarkSkyApi(settings.darksky_api_key)
         data['temperature'] = ds.get_temperature(data['latitude'], data['longitude'])
 
     voltage = data['grid_voltage']
-    if args.pv_voltage:
+    if settings.pv_voltage:
         voltage=data['pv_voltage']
 
-    if args.pvo_system_id and args.pvo_api_key:
-        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+    if settings.pvo_system_id and settings.pvo_api_key:
+        pvo = pvo_api.PVOutputApi(settings.pvo_system_id, settings.pvo_api_key)
         pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
     else:
         logging.debug(str(data))
         logging.warning("Missing PVO id and/or key")
 
-def copy(args):
+def copy(settings):
     # Fetch readings from GoodWe
-    date = datetime.strptime(args.date, "%Y-%m-%d")
+    date = datetime.strptime(settings.date, "%Y-%m-%d")
 
-    gw = gw_api.GoodWeApi(args.gw_station_id, args.gw_account, args.gw_password)
+    gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
     data = gw.getDayReadings(date)
 
-    if args.pvo_system_id and args.pvo_api_key:
-        if args.darksky_api_key:
-            ds = ds_api.DarkSkyApi(args.darksky_api_key)
+    if settings.pvo_system_id and settings.pvo_api_key:
+        if settings.darksky_api_key:
+            ds = ds_api.DarkSkyApi(settings.darksky_api_key)
             temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
         else:
             temperatures = None
 
         # Submit readings to PVOutput
-        pvo = pvo_api.PVOutputApi(args.pvo_system_id, args.pvo_api_key)
+        pvo = pvo_api.PVOutputApi(settings.pvo_system_id, settings.pvo_api_key)
         pvo.add_day(data['entries'], temperatures)
     else:
         for entry in data['entries']:
@@ -106,11 +108,32 @@ def copy(args):
         logging.warning("Missing PVO id and/or key")
 
 def run():
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Upload GoodWe power inverter data to PVOutput.org")
-    parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID', required=True)
-    parser.add_argument("--gw-account", help="GoodWe account", metavar='ACCOUNT', required=True)
-    parser.add_argument("--gw-password", help="GoodWe password", metavar='PASSWORD', required=True)
+    defaults = { }
+
+    # Parse any config file specification. We make this parser with add_help=False so
+    # that it doesn't parse -h and print help.
+    conf_parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        add_help=False
+    )
+    conf_parser.add_argument("--config", help="Specify config file", metavar='FILE')
+    args, remaining_argv = conf_parser.parse_known_args()
+
+    # Read configuration file and add it to the defaults hash.
+    if args.config:
+        config = ConfigParser()
+        config.read(args.config)
+        defaults.update(dict(config.items("Defaults")))
+
+    # Parse rest of arguments
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        parents=[conf_parser],
+    )
+    parser.set_defaults(**defaults)
+    parser.add_argument("--gw-station-id", help="GoodWe station ID", metavar='ID')
+    parser.add_argument("--gw-account", help="GoodWe account", metavar='ACCOUNT')
+    parser.add_argument("--gw-password", help="GoodWe password", metavar='PASSWORD')
     parser.add_argument("--pvo-system-id", help="PVOutput system ID", metavar='ID')
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY')
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
