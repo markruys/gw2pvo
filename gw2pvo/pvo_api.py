@@ -87,7 +87,7 @@ class PVOutputApi:
                     r.raise_for_status()
                     break
             except requests.exceptions.RequestException as arg:
-                logging.warning(arg)
+                logging.warning(r.text or str(arg))
             time.sleep(i ** 3)
         else:
             logging.error("Failed to call PVOutput API")
