@@ -32,18 +32,24 @@ class GoodWeApi:
 
         inverterData = data['inverter'][0]
 
+        pv_voltages = [
+            inverterData['d']['vpv' + str(i)]
+            for i in range(1,5)
+            if inverterData['d']['vpv' + str(i)] is not None and inverterData['d']['vpv' + str(i)] < 6553
+        ]
+
         result = {
             'status' : self.status[inverterData['status']],
             'pgrid_w' : inverterData['out_pac'],
             'eday_kwh' : inverterData['eday'],
             'etotal_kwh' : inverterData['etotal'],
             'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
-            'pv_voltage' : inverterData['d']['vpv1'],
+            'pv_voltage' : round(sum(pv_voltages), 1),
             'latitude' : data['info'].get('latitude'),
             'longitude' : data['info'].get('longitude')
         }
 
-        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today".format(**result)
+        message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today, {etotal_kwh} kWh all time, {grid_voltage} V grid, {pv_voltage} V PV".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
