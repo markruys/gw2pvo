@@ -172,6 +172,9 @@ def run():
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
 
+    if args.gw_station_id is None or args.gw_account is None or args.gw_password is None:
+        sys.exit("Missing --gw-station-id, --gw-account and/or --gw-password")
+
     # Configure the logging
     numeric_level = getattr(logging, args.log.upper(), None)
     if not isinstance(numeric_level, int):
