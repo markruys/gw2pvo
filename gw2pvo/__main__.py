@@ -144,7 +144,10 @@ def run():
     if args.config:
         config = ConfigParser()
         config.read(args.config)
-        defaults.update(dict(config.items("Defaults")))
+        if "Defaults" in config:
+            defaults.update(dict(config.items("Defaults")))
+        else:
+            sys.exit("Bad config file, missing Defaults section")
 
     # Parse rest of arguments
     parser = argparse.ArgumentParser(
