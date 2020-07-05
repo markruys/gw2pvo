@@ -187,6 +187,8 @@ def run():
     if args.date:
         try:
             copy(args)
+        except KeyboardInterrupt:
+            sys.exit(1)
         except Exception as exp:
             logging.error(exp)
         sys.exit()
@@ -196,6 +198,8 @@ def run():
     while True:
         try:
             run_once(args)
+        except KeyboardInterrupt:
+            sys.exit(1)
         except Exception as exp:
             logging.error(exp)
 
