@@ -164,6 +164,37 @@ sudo systemctl status gw2pvo
 sudo journalctl -u gw2pvo -f
 ```
 
+## Docker
+
+You can use the [Dockerfile](https://github.com/markruys/gw2pvo/blob/master/Dockerfile) to run a Docker container as follows:
+
+```shell
+docker build --tag gw2pvo .
+```
+
+Add all settings to config file named `gw2pvo.cfg` like:
+
+```ini
+[Defaults]
+gw_station_id = ...
+gw_account = ...
+gw_password = ...
+
+pvo_api_key = ...
+pvo_system_id = ...
+
+city = Amsterdam
+log = info
+pvo_interval = 5
+skip_offline = yes
+```
+
+Do set `city` to a [valid value](https://astral.readthedocs.io/en/stable/index.html#cities) otherwise the container will use the UTC timezone. Then start the container like:
+
+```shell
+docker run --rm -v $(pwd)/gw2pvo.cfg:/gw2pvo.cfg gw2pvo
+```
+
 ## Recover missed data
 
 You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
@@ -173,10 +204,6 @@ gw2pvo --config gw2pvo.cfg --date YYYY-MM-DD
 ```
 
 Beware that the date parameter must be not be older than 14 days from the current date. In donation mode, not more than 90 days.
-
-## Docker
-
-Michaël Hompus created a [Docker container](https://hub.docker.com/r/energy164/gw2pvo/) ([Github](https://github.com/eNeRGy164/gw2pvo-docker)) to run gw2pvo.
 
 ## Disclaimer and warrenty
 
