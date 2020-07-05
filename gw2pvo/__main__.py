@@ -53,9 +53,9 @@ def run_once(settings):
 
     # Check if we only want to run during daylight
     if settings.city:
-        l = Location(lookup(settings.city, database()))
+        city = Location(lookup(settings.city, database()))
         now = datetime.time(datetime.now())
-        if now < l.dawn().time() or now > l.dusk().time():
+        if now < city.dawn().time() or now > city.dusk().time():
             logging.debug("Skipped upload as it's night")
             return
 
@@ -128,7 +128,9 @@ def copy(settings):
         logging.warning("Missing PVO id and/or key")
 
 def run():
-    defaults = { }
+    defaults = {
+        'log': "info"
+    }
 
     # Parse any config file specification. We make this parser with add_help=False so
     # that it doesn't parse -h and print help.
@@ -163,7 +165,7 @@ def run():
     parser.add_argument("--netatmo-client-id", help="Netatmo OAuth client id")
     parser.add_argument("--netatmo-client-secret", help="Netatmo OAuth client secret")
     parser.add_argument("--netatmo-device-id", help="Netatmo device id")
-    parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'], default="info")
+    parser.add_argument("--log", help="Set log level (default info)", choices=['debug', 'info', 'warning', 'critical'])
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--pv-voltage", help="Send pv voltage instead of grid voltage", action='store_true')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
@@ -172,9 +174,6 @@ def run():
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
 
-    if args.gw_station_id is None or args.gw_account is None or args.gw_password is None:
-        sys.exit("Missing --gw-station-id, --gw-account and/or --gw-password")
-
     # Configure the logging
     numeric_level = getattr(logging, args.log.upper(), None)
     if not isinstance(numeric_level, int):
@@ -182,6 +181,9 @@ def run():
     logging.basicConfig(format='%(levelname)-8s %(message)s', level=numeric_level)
 
     logging.debug("gw2pvo version " + __version__)
+
+    if args.gw_station_id is None or args.gw_account is None or args.gw_password is None:
+        sys.exit("Missing --gw-station-id, --gw-account and/or --gw-password")
 
     # Check if we want to copy old data
     if args.date:
