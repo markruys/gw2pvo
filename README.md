@@ -79,7 +79,7 @@ optional arguments:
   --date YYYY-MM-DD     Copy all readings (max 14/90 days ago)
   --pv-voltage          Send pv voltage instead of grid voltage
   --skip-offline        Skip uploads when inverter is offline
-  --city CITY           Skip uploads from dusk till dawn
+  --city CITY           Sets timezone and skip uploads from dusk till dawn
   --csv CSV             Append readings to a Excel compatible CSV file, DATE
                         in the name will be replaced by the current date
   --version             show program's version number and exit
@@ -115,6 +115,8 @@ pvo_api_key = ...
 pvo_system_id = ...
 
 darksky_api_key = ...
+
+city = ...
 ```
 
 Then this will also upload your inverter data to PVOutput:

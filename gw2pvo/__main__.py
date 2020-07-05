@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
+import sys, os
 if sys.version_info < (3,6):
     sys.exit('Sorry, you need at least Python 3.6 for Astral 2')
 
@@ -48,12 +48,11 @@ def get_temperature(settings, latitude, longitude):
         return ds.get_temperature(latitude, longitude)
     return None
 
-def run_once(settings):
+def run_once(settings, city):
     global last_eday_kwh
 
     # Check if we only want to run during daylight
-    if settings.city:
-        city = Location(lookup(settings.city, database()))
+    if city:
         now = datetime.time(datetime.now())
         if now < city.dawn().time() or now > city.dusk().time():
             logging.debug("Skipped upload as it's night")
@@ -169,7 +168,7 @@ def run():
     parser.add_argument("--date", help="Copy all readings (max 14/90 days ago)", metavar='YYYY-MM-DD')
     parser.add_argument("--pv-voltage", help="Send pv voltage instead of grid voltage", action='store_true')
     parser.add_argument("--skip-offline", help="Skip uploads when inverter is offline", action='store_true')
-    parser.add_argument("--city", help="Skip uploads from dusk till dawn")
+    parser.add_argument("--city", help="Sets timezone and skip uploads from dusk till dawn")
     parser.add_argument('--csv', help="Append readings to a Excel compatible CSV file, DATE in the name will be replaced by the current date")
     parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
@@ -185,6 +184,14 @@ def run():
     if args.gw_station_id is None or args.gw_account is None or args.gw_password is None:
         sys.exit("Missing --gw-station-id, --gw-account and/or --gw-password")
 
+    if args.city:
+        city = Location(lookup(args.city, database()))
+        os.environ['TZ'] = city.timezone
+        time.tzset()
+    else:
+        city = None
+    logging.debug("Timezone {}".format(datetime.now().astimezone().tzinfo))
+
     # Check if we want to copy old data
     if args.date:
         try:
@@ -199,7 +206,7 @@ def run():
 
     while True:
         try:
-            run_once(args)
+            run_once(args, city)
         except KeyboardInterrupt:
             sys.exit(1)
         except Exception as exp:
