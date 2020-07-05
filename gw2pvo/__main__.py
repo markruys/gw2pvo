@@ -178,11 +178,6 @@ def run():
         raise ValueError('Invalid log level: %s' % loglevel)
     logging.basicConfig(format='%(levelname)-8s %(message)s', level=numeric_level)
 
-    # Check if we're running the supported Python version
-    if sys.version_info[0] != 3:
-        logging.error("Please use Python 3 to run this script")
-        sys.exit()
-
     # Check if we want to copy old data
     if args.date:
         try:
