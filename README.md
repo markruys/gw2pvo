@@ -8,7 +8,7 @@ gw2pvo is a command line tool to upload solar data from a GoodWe power inverter 
 You need to have Python 3 and pip installed. Then:
 
 ```shell
-sudo pip3 install gw2pvo==1.3.5
+sudo pip3 install --upgrade gw2pvo
 ```
 
 Next determine the Station ID from the GoodWe site as follows. Open the [Sems Portal](https://www.semsportal.com). The Plant Status will reveal the Station ID in the URL. Example:
@@ -85,6 +85,8 @@ optional arguments:
   --version             show program's version number and exit
 ```
 
+The list of allowed cities can be found in the [Astral documentation](https://astral.readthedocs.io/en/stable/index.html#cities).
+
 ### Examples
 
 ```shell
@@ -97,7 +99,7 @@ If you want to save readings in a daily CSV file:
 gw2pvo --gw-station-id GWID --gw-account ACCOUNT --gw-password PASSWORD --pvo-system-id PVOID --pvo-api-key KEY --csv "Solar DATE.csv"
 ```
 
-Off course replace GWID, ACCOUNT, PVOID, PASSWORD, and KEY for the proper values. DATE will be automatically substituted by the current date.
+Replace GWID, ACCOUNT, PVOID, PASSWORD, and KEY by the proper values. DATE is a template and will be automatically substituted by the current date.
 
 ### Config file
 
