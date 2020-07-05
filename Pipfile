@@ -9,6 +9,8 @@ verify_ssl = true
 astral = "*"
 requests = "*"
 gw2pvo = {editable = true,path = "."}
+oauthlib = "*"
+requests-oauthlib = "*"
 
 [requires]
 python_version = "3.7"
