@@ -181,6 +181,8 @@ def run():
         raise ValueError('Invalid log level: %s' % loglevel)
     logging.basicConfig(format='%(levelname)-8s %(message)s', level=numeric_level)
 
+    logging.debug("gw2pvo version " + __version__)
+
     # Check if we want to copy old data
     if args.date:
         try:
