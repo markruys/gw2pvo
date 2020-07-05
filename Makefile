@@ -10,3 +10,6 @@ dist: README.rst
 	rm -fr dist
 	python3 setup.py sdist bdist_wheel
 
+pypi:
+	python -m twine upload --repository gw2pvo dist/*
+
