@@ -10,6 +10,9 @@ dist: README.rst
 	rm -fr dist
 	python3 setup.py sdist bdist_wheel
 
-pypi:
+test: dist
+	docker build --no-cache -f tests/Dockerfile .
+
+pypi: dist
 	python -m twine upload --repository gw2pvo dist/*
 
