@@ -184,6 +184,9 @@ def run():
 
     logging.debug("gw2pvo version " + __version__)
 
+    if isinstance(args.skip_offline, str):
+        args.skip_offline = args.skip_offline.lower() in ['true', 'yes', 'on', '1']
+
     if args.gw_station_id is None or args.gw_account is None or args.gw_password is None:
         sys.exit("Missing --gw-station-id, --gw-account and/or --gw-password")
 
