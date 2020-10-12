@@ -8,6 +8,7 @@ import logging
 import argparse
 import locale
 import time
+import json
 from datetime import datetime
 from configparser import ConfigParser
 
@@ -16,6 +17,7 @@ from astral.geocoder import lookup, database
 from astral.location import Location
 
 from gw2pvo import ds_api
+from gw2pvo import ow_api
 from gw2pvo import gw_api
 from gw2pvo import netatmo_api
 from gw2pvo import gw_csv
@@ -46,6 +48,9 @@ def get_temperature(settings, latitude, longitude):
     elif settings.darksky_api_key:
         ds = ds_api.DarkSkyApi(settings.darksky_api_key)
         return ds.get_temperature(latitude, longitude)
+    elif settings.openweather_api_key:
+        ow = ow_api.OpenWeatherApi(settings.openweather_api_key)
+        return ow.get_temperature(latitude, longitude)
     return None
 
 def run_once(settings, city):
@@ -103,7 +108,6 @@ def run_once(settings, city):
 def copy(settings):
     # Fetch readings from GoodWe
     date = datetime.strptime(settings.date, "%Y-%m-%d")
-
     gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
     data = gw.getDayReadings(date)
 
@@ -111,6 +115,9 @@ def copy(settings):
         if settings.darksky_api_key:
             ds = ds_api.DarkSkyApi(settings.darksky_api_key)
             temperatures = ds.get_temperature_for_day(data['latitude'], data['longitude'], date)
+        elif settings.openweather_api_key:
+            ow = ow_api.OpenWeatherApi(settings.openweather_api_key)
+            temperatures = ow.get_temperature_for_day(data['latitude'], data['longitude'], date)
         else:
             temperatures = None
 
@@ -162,6 +169,7 @@ def run():
     parser.add_argument("--pvo-api-key", help="PVOutput API key", metavar='KEY')
     parser.add_argument("--pvo-interval", help="PVOutput interval in minutes", type=int, choices=[5, 10, 15])
     parser.add_argument("--darksky-api-key", help="Dark Sky Weather API key")
+    parser.add_argument("--openweather-api-key", help="Open Weather API key")
     parser.add_argument("--netatmo-username", help="Netatmo username")
     parser.add_argument("--netatmo-password", help="Netatmo password")
     parser.add_argument("--netatmo-client-id", help="Netatmo OAuth client id")
