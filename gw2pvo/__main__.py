@@ -8,7 +8,6 @@ import logging
 import argparse
 import locale
 import time
-import json
 from datetime import datetime
 from configparser import ConfigParser
 

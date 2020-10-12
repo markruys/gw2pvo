@@ -52,7 +52,7 @@ class OpenWeatherApi:
             'longitude' : longitude,
             'date' : int(datetime.strptime(str(date) + "+0000", "%Y-%m-%d %H:%M:%S%z").astimezone(timezone.utc).timestamp()),
         }
-        logging.debug(data)
+
         url = "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={latitude}&lon={longitude}&units=metric&dt={date}&appid={apiKey}".format(**data)
 
         for i in range(1, 4):
