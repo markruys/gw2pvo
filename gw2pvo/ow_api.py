@@ -31,7 +31,9 @@ class OpenWeatherApi:
                 r = requests.get(url, timeout=10)
                 r.raise_for_status()
                 result = r.json()
-
+                result = json.dumps(result)
+                result = result.replace('temp','temperature')
+                result = json.loads(result)
                 logging.debug(result['current'])
                 return result['current']['temperature']
 
