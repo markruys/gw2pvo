@@ -65,6 +65,12 @@ class GoodWeApi:
                 count += 1
             result['eday_kwh'] += inverterData['eday']
             result['etotal_kwh'] += inverterData['etotal']
+            if inverterData['invert_full']['hasmeter']:
+                result['pload_w'] += round(result['pgrid_w'] - inverterData['invert_full']['pmeter'])
+
+        if inverterData['invert_full']['hasmeter']:    
+            result['load_total_kwh'] = data["energeStatisticsCharts"]['consumptionOfLoad']
+  
         if count > 0:
             # These values should not be the sum, but the average
             result['grid_voltage'] /= count
@@ -79,6 +85,7 @@ class GoodWeApi:
             result['pload_w'] = result['pgrid_w'] - inverterData['invert_full']['pmeter']
             result['load_total_kwh'] = inverterData["energeStatisticsCharts"]['consumptionOfLoad']
         message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today, {etotal_kwh} kWh all time, {grid_voltage} V grid, {pv_voltage} V PV".format(**result)
+        message += ", {pload_w} W Load, {load_total_kwh} kWh Load today".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
         else:
