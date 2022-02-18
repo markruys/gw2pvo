@@ -60,6 +60,7 @@ def run_once(settings, city):
 
     # Fetch the last reading from GoodWe
     gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
+    print("test")
     data = gw.getCurrentReadings()
 
     # Check if we want to abort when offline
