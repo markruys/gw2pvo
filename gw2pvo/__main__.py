@@ -60,7 +60,6 @@ def run_once(settings, city):
 
     # Fetch the last reading from GoodWe
     gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
-    print("test")
     data = gw.getCurrentReadings()
 
     # Check if we want to abort when offline
@@ -96,7 +95,11 @@ def run_once(settings, city):
 
     if settings.pvo_system_id and settings.pvo_api_key:
         pvo = pvo_api.PVOutputApi(settings.pvo_system_id, settings.pvo_api_key)
-        pvo.add_status(data['pgrid_w'], last_eday_kwh, data.get('temperature'), voltage)
+        pvo.add_status(data['pgrid_w'], last_eday_kwh,
+                       data.get('temperature'),
+                       voltage,
+                       data['load_total_kwh'],
+                       data['pload_w'])
     else:
         logging.debug(str(data))
         logging.warning("Missing PVO id and/or key")

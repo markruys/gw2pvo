@@ -13,13 +13,16 @@ class PVOutputApi:
         self.m_system_id = system_id
         self.m_api_key = api_key
 
-    def add_status(self, pgrid_w, eday_kwh, temperature, voltage):
+    def add_status(self, pgrid_w, eday_kwh, temperature, voltage,
+                   loadday_kwh, pload_w):
         t = time.localtime()
         payload = {
             'd' : "{:04}{:02}{:02}".format(t.tm_year, t.tm_mon, t.tm_mday),
             't' : "{:02}:{:02}".format(t.tm_hour, t.tm_min),
             'v1' : round(eday_kwh * 1000),
-            'v2' : round(pgrid_w)
+            'v2' : round(pgrid_w),
+            'v3' : round(loadday_kwh * 1000),
+            'v4' : round(pload_w)
         }
 
         if temperature is not None:

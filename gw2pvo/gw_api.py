@@ -49,7 +49,9 @@ class GoodWeApi:
             'grid_voltage' : 0,
             'pv_voltage' : 0,
             'latitude' : data['info'].get('latitude'),
-            'longitude' : data['info'].get('longitude')
+            'longitude' : data['info'].get('longitude'),
+            'pload_w' : 0,
+            'load_total_kwh': 0, 
         }
 
         count = 0
@@ -74,7 +76,8 @@ class GoodWeApi:
             result['pgrid_w'] = inverterData['out_pac']
             result['grid_voltage'] = self.parseValue(inverterData['output_voltage'], 'V')
             result['pv_voltage'] = self.calcPvVoltage(inverterData['d'])
-
+            result['pload_w'] = result['pgrid_w'] - inverterData['invert_full']['pmeter']
+            result['load_total_kwh'] = inverterData["energeStatisticsCharts"]['consumptionOfLoad']
         message = "{status}, {pgrid_w} W now, {eday_kwh} kWh today, {etotal_kwh} kWh all time, {grid_voltage} V grid, {pv_voltage} V PV".format(**result)
         if result['status'] == 'Normal' or result['status'] == 'Offline':
             logging.info(message)
