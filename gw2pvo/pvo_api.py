@@ -45,7 +45,9 @@ class PVOutputApi:
                     dt.strftime('%Y%m%d'),
                     dt.strftime('%H:%M'),
                     str(round(reading['eday_kwh'] * 1000)),
-                    str(reading['pgrid_w'])
+                    str(reading['pgrid_w']),
+                    str(round(reading['ploadday_kwh'] * 1000)),
+                    str(reading['pload_w'])
                 ]
 
                 if temperatures is not None:

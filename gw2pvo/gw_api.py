@@ -15,7 +15,7 @@ class GoodWeApi:
         self.system_id = system_id
         self.account = account
         self.password = password
-        self.token = '{"version":"v3.1","client":"ios","language":"en"}'
+        self.token = '{"version":"v3.3.4","client":"ios","language":"en"}'
         self.global_url = 'https://semsportal.com/api/'
         self.base_url = self.global_url
 
@@ -132,30 +132,57 @@ class GoodWeApi:
             'date' : date.strftime('%Y-%m-%d')
         }
         data = self.call("v2/PowerStationMonitor/GetPowerStationPacByDayForApp", payload)
+        #print(data)
         if 'pacs' not in data:
             logging.warning("GetPowerStationPacByDayForApp returned bad data: " + str(data))
             return []
 
         return data['pacs']
 
+    def getDayPload(self, date):
+        payload = {
+            'id' : self.system_id,
+            'date' : date.strftime('%Y-%m-%d'),
+            'range':"2",
+            'chartIndexId':"1"
+        }
+        data = self.call("v2/Charts/GetChartByPlant", payload)
+        #print(data)
+        if 'lines' not in data:
+            logging.warning("GetChartByPlant returned bad data: " + str(data))
+            return []
+
+        return data['lines']
+
+
     def getDayReadings(self, date):
         result = self.getLocation()
         pacs = self.getDayPac(date)
-
+        ploads = self.getDayPload(date)
+        for val in ploads: 
+            if  val["label"] == "Load (W)":
+                ploads_d = val["xy"]
+        #print(ploads_d)    
         hours = 0
         kwh = 0
+        kwh_l = 0
         result['entries'] = []
-        for sample in pacs:
-            parsed_date = datetime.strptime(sample['date'], "%m/%d/%Y %H:%M:%S")
+        for samplepac, samplepload in zip(pacs, ploads_d):
+            parsed_date = datetime.strptime(samplepac['date'], "%m/%d/%Y %H:%M:%S")
             next_hours = parsed_date.hour + parsed_date.minute / 60
-            pgrid_w = sample['pac']
-            if pgrid_w > 0:
-                kwh += pgrid_w / 1000 * (next_hours - hours)
-                result['entries'].append({
-                    'dt' : parsed_date,
-                    'pgrid_w': pgrid_w,
-                    'eday_kwh': round(kwh, 3)
-                })
+            pgrid_w = samplepac['pac']
+            pload_w = samplepload['y']
+            if pload_w > 0:
+                kwh_l += pload_w / 1000 * (next_hours - hours)
+                if pgrid_w > 0:
+                    kwh += pgrid_w / 1000 * (next_hours - hours)
+                    result['entries'].append({
+                        'dt' : parsed_date,
+                        'pgrid_w': pgrid_w,
+                        'eday_kwh': round(kwh, 3),
+                        'pload_w': pload_w,
+                        'ploadday_kwh': round(kwh_l,3)
+                    })
             hours = next_hours
 
         eday_kwh = self.getActualKwh(date)
@@ -170,7 +197,7 @@ class GoodWeApi:
         for i in range(1, 4):
             try:
                 headers = {
-                    'User-Agent': 'SEMS Portal/3.1 (iPhone; iOS 13.5.1; Scale/2.00)',
+                    'User-Agent': 'SEMS Portal/3.3.4 (iPhone; iOS 15.3.1; Scale/2.00)',
                     'Token': self.token,
                 }
 
@@ -191,7 +218,7 @@ class GoodWeApi:
                         'account': self.account,
                         'pwd': self.password,
                     }
-                    r = requests.post(self.global_url + 'v2/Common/CrossLogin', headers=headers, data=loginPayload, timeout=10)
+                    r = requests.post(self.global_url + 'v2/Common/CrossLogin', headers=headers, data=loginPayload, timeout=20)
                     r.raise_for_status()
                     data = r.json()
                     if 'api' not in data:
