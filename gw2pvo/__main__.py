@@ -52,11 +52,11 @@ def run_once(settings, city):
     global last_eday_kwh
 
     # Check if we only want to run during daylight
-    if city:
-        now = datetime.time(datetime.now())
-        if now < city.dawn().time() or now > city.dusk().time():
-            logging.debug("Skipped upload as it's night")
-            return
+    # if city:
+    #     now = datetime.time(datetime.now())
+    #     if now < city.dawn().time() or now > city.dusk().time():
+    #         logging.debug("Skipped upload as it's night")
+    #         return
 
     # Fetch the last reading from GoodWe
     gw = gw_api.GoodWeApi(settings.gw_station_id, settings.gw_account, settings.gw_password)
@@ -123,10 +123,12 @@ def copy(settings):
         pvo.add_day(data['entries'], temperatures)
     else:
         for entry in data['entries']:
-            logging.info("{}: {:6.0f} W {:6.2f} kWh".format(
+            logging.info("{}: {:6.0f} W {:6.2f} kWh {:6.0f} W {:6.2f} kWh".format(
                 entry['dt'],
                 entry['pgrid_w'],
                 entry['eday_kwh'],
+                entry['pload_w'],
+                entry['ploadday_kwh']
             ))
         logging.warning("Missing PVO id and/or key")
 

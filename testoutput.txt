@@ -1,0 +1,380 @@
+Single Inverter
+
+info
+
+	powerstation_id:ce34a6a9-c0e3-44d1-bb68-393aabc6e173
+	time:02/19/2022 09:48:31
+	date_format:dd.MM.yyyy
+	date_format_ym:MM.yyyy
+	stationname:Henderson Solar
+	address:11 Whareora Terrace, Cashmere, Christchurch 8022, New Zealand
+	owner_name:None
+	owner_phone:None
+	owner_email:ba.henderson@gmail.com
+	battery_capacity:0.0
+	turnon_time:12/09/2021 12:50:20
+	create_time:12/09/2021 12:48:03
+	capacity:4.44
+	longitude:172.63254918158054
+	latitude:-43.57238462309215
+	powerstation_type:Battery Storage
+	status:1
+	is_stored:True
+	is_powerflow:True
+	charts_type:1
+	has_pv:True
+	has_statistics_charts:True
+	only_bps:False
+	only_bpu:False
+	time_span:-13.0
+	pr_value:
+
+kpi
+
+	month_generation:268.1
+	pac:2348.4
+	power:2.7
+	total_power:1722.4
+	day_income:0.22
+	total_income:137.79
+	yield_rate:0.08
+	currency:--
+powercontrol_status:0
+images:['https://oversea-gops-au.oss-cn-hongkong.aliyuncs.com/powerstation_img/86fbf7f4-a0e4-4c4f-b79d-2b4e528e9924.png']
+
+weather
+
+	HeWeather6:[{'daily_forecast': [{'cond_code_d': '300', 'cond_code_n': '300', 'cond_txt_d': 'Shower Rain', 'cond_txt_n': 'Shower Rain', 'date': '2022-02-19', 'time': '2022-02-19 00:00:00', 'hum': '67', 'pcpn': '1.9', 'pop': '67', 'pres': '1013', 'tmp_max': '25', 'tmp_min': '12', 'uv_index': '4', 'vis': '24', 'wind_deg': '270', 'wind_dir': 'W', 'wind_sc': '1-2', 'wind_spd': '11'}, {'cond_code_d': '103', 'cond_code_n': '100', 'cond_txt_d': 'Partly Cloudy', 'cond_txt_n': 'Sunny', 'date': '2022-02-20', 'time': '2022-02-20 00:00:00', 'hum': '79', 'pcpn': '0.0', 'pop': '2', 'pres': '1015', 'tmp_max': '18', 'tmp_min': '13', 'uv_index': '7', 'vis': '24', 'wind_deg': '63', 'wind_dir': 'NE', 'wind_sc': '3-4', 'wind_spd': '13'}, {'cond_code_d': '100', 'cond_code_n': '100', 'cond_txt_d': 'Sunny', 'cond_txt_n': 'Sunny', 'date': '2022-02-21', 'time': '2022-02-21 00:00:00', 'hum': '55', 'pcpn': '0.0', 'pop': '1', 'pres': '1011', 'tmp_max': '18', 'tmp_min': '12', 'uv_index': '7', 'vis': '24', 'wind_deg': '67', 'wind_dir': 'NE', 'wind_sc': '3-4', 'wind_spd': '17'}, {'cond_code_d': '100', 'cond_code_n': '300', 'cond_txt_d': 'Sunny', 'cond_txt_n': 'Shower Rain', 'date': '2022-02-22', 'time': '2022-02-22 00:00:00', 'hum': '83', 'pcpn': '0.0', 'pop': '5', 'pres': '1026', 'tmp_max': '28', 'tmp_min': '14', 'uv_index': '7', 'vis': '24', 'wind_deg': '278', 'wind_dir': 'W', 'wind_sc': '1-2', 'wind_spd': '10'}, {'cond_code_d': '101', 'cond_code_n': '103', 'cond_txt_d': 'Cloudy', 'cond_txt_n': 'Partly Cloudy', 'date': '2022-02-23', 'time': '2022-02-23 00:00:00', 'hum': '75', 'pcpn': '0.5', 'pop': '40', 'pres': '1026', 'tmp_max': '17', 'tmp_min': '13', 'uv_index': '2', 'vis': '25', 'wind_deg': '49', 'wind_dir': 'NE', 'wind_sc': '1-2', 'wind_spd': '7'}, {'cond_code_d': '104', 'cond_code_n': '101', 'cond_txt_d': 'Overcast', 'cond_txt_n': 'Cloudy', 'date': '2022-02-24', 'time': '2022-02-24 00:00:00', 'hum': '71', 'pcpn': '0.0', 'pop': '25', 'pres': '1019', 'tmp_max': '17', 'tmp_min': '14', 'uv_index': '2', 'vis': '25', 'wind_deg': '68', 'wind_dir': 'NE', 'wind_sc': '3-4', 'wind_spd': '13'}, {'cond_code_d': '999', 'cond_code_n': '999', 'cond_txt_d': '-', 'cond_txt_n': '-', 'date': '2022-02-25', 'time': '2022-02-25 00:00:00', 'hum': '-', 'pcpn': '-', 'pop': '-', 'pres': '-', 'tmp_max': '-', 'tmp_min': '-', 'uv_index': '-', 'vis': '-', 'wind_deg': '-', 'wind_dir': '--', 'wind_sc': '--', 'wind_spd': '-'}], 'basic': {'cid': 'NZ2192362', 'location': 'Christchurch', 'cnty': 'New Zealand', 'lat': '-43.529999', 'lon': '172.620285', 'tz': '+13.00'}, 'update': {'loc': '2022-02-18 23:55:00', 'utc': '2022-02-18 10:55:00'}, 'status': 'ok'}]
+
+inverter
+
+	sn:95000EHR214W0097
+
+	dict
+
+		left:[{'isHT': False, 'key': 'dmDeviceType', 'value': 'GW5000-EH', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'serialNum', 'value': '95000EHR214W0097', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'laCheckcode', 'value': '001354', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'capacity', 'value': '5', 'unit': 'kW', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'innerTemp', 'value': '32', 'unit': '℃', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'ouptputPower', 'value': '2254', 'unit': 'W', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'outputV', 'value': '241.7', 'unit': 'V', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'bakupOutput', 'value': '0', 'unit': 'W', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'bakupV', 'value': '241.3', 'unit': 'V', 'isFaultMsg': 0, 'faultMsgCode': 0}]
+		right:[{'isHT': False, 'key': 'dcVandC1', 'value': '214.5/5.5', 'unit': 'V/A', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'dcVandC2', 'value': '220.5/5.3', 'unit': 'V/A', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'StatusOfBattery', 'value': '0/0/0', 'unit': 'V/A/W', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'batteryStatus', 'value': 'No battery', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'warnBMS', 'value': '--', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'chargeClimitBMS', 'value': '0', 'unit': 'A', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'dischargeClimitBMS', 'value': '1', 'unit': 'A', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'SOH', 'value': '0', 'unit': '%', 'isFaultMsg': 0, 'faultMsgCode': 0}, {'isHT': False, 'key': 'verFB', 'value': '316/0', 'unit': '', 'isFaultMsg': 0, 'faultMsgCode': 0}]
+	is_stored:True
+	name:95000EHR214W0097
+	in_pac:10.8
+	out_pac:2348.4
+	eday:2.7
+	emonth:265.4
+	etotal:1722.4
+	status:1
+	turnon_time:12/09/2021 12:50:20
+	releation_id:fe05b2da-c779-4a91-baaa-4dbba59378b1
+	type:GW5000-EH
+	capacity:5.0
+
+	d
+
+		pw_id:ce34a6a9-c0e3-44d1-bb68-393aabc6e173
+		capacity:5kW
+		model:GW5000-EH
+		output_power:2254W
+		output_current:9.4A
+		grid_voltage:241.7V
+		backup_output:241.3V/0W
+		soc:0%
+		soh:0%
+		last_refresh_time:19.02.2022 09:48:25
+		work_mode:Wait Mode
+		dc_input1:214.5V/5.5A
+		dc_input2:220.5V/5.3A
+		battery:0V/0A/0W
+		bms_status:No battery
+		warning:--
+		charge_current_limit:0A
+		discharge_current_limit:1A
+		firmware_version:316.0
+		creationDate:02/19/2022 04:48:25
+		eDay:2.7
+		eTotal:1722.4
+		pac:2348.4
+		hTotal:1064.0
+		vpv1:214.5
+		vpv2:220.5
+		vpv3:None
+		vpv4:None
+		ipv1:5.5
+		ipv2:5.3
+		ipv3:None
+		ipv4:None
+		vac1:241.7
+		vac2:6553.5
+		vac3:6553.5
+		iac1:9.4
+		iac2:6553.5
+		iac3:6553.5
+		fac1:49.98
+		fac2:655.35
+		fac3:655.35
+		istr1:0.0
+		istr2:0.0
+		istr3:None
+		istr4:None
+		istr5:None
+		istr6:225.4
+		istr7:None
+		istr8:214748364.7
+		istr9:None
+		istr10:214748364.7
+		istr11:None
+		istr12:32767.0
+		istr13:65535.0
+		istr14:65535.0
+		istr15:65535.0
+		istr16:0.0
+	it_change_flag:False
+	tempperature:32.0
+	check_code:001354
+	next:None
+	prev:None
+
+	next_device
+
+		sn:None
+		isStored:False
+
+	prev_device
+
+		sn:None
+		isStored:False
+
+	invert_full
+
+		sn:95000EHR214W0097
+		powerstation_id:ce34a6a9-c0e3-44d1-bb68-393aabc6e173
+		name:95000EHR214W0097
+		model_type:GW5000-EH
+		change_type:0
+		change_time:0
+		capacity:5.0
+		eday:2.7
+		iday:0.21600000000000003
+		etotal:1722.4
+		itotal:133.88
+		hour_total:1064.0
+		status:1
+		turnon_time:1639025420047
+		pac:2348.4
+		tempperature:32.0
+		vpv1:214.5
+		vpv2:220.5
+		vpv3:None
+		vpv4:None
+		ipv1:5.5
+		ipv2:5.3
+		ipv3:None
+		ipv4:None
+		vac1:241.7
+		vac2:6553.5
+		vac3:6553.5
+		iac1:9.4
+		iac2:6553.5
+		iac3:6553.5
+		fac1:49.98
+		fac2:655.35
+		fac3:655.35
+		istr1:0.0
+		istr2:0.0
+		istr3:None
+		istr4:None
+		istr5:None
+		istr6:225.4
+		istr7:None
+		istr8:214748364.7
+		istr9:None
+		istr10:214748364.7
+		istr11:None
+		istr12:32767.0
+		istr13:65535.0
+		istr14:65535.0
+		istr15:65535.0
+		istr16:0.0
+		last_time:1645217305459
+		vbattery1:0.0
+		ibattery1:0.0
+		pmeter:-1516.0
+		soc:0.0
+		soh:0.0
+		bms_discharge_i_max:1.0
+		bms_charge_i_max:0.0
+		bms_warning:0
+		bms_alarm:4096
+		battary_work_mode:0
+		workmode:1
+		vload:241.3
+		iload:0.6
+		firmwareversion:3.0
+		bmssoftwareversion:0.0
+		pbackup:0.0
+		seller:1.3
+		buy:9.05
+		yesterdaybuytotal:9.169063
+		yesterdaysellertotal:8.723437
+		yesterdayct2sellertotal:None
+		yesterdayetotal:1719.7
+		yesterdayetotalload:12.1
+		yesterdaylastime:0
+		thismonthetotle:265.4
+		lastmonthetotle:1426.4
+		ram:16.0
+		outputpower:2254.0
+		fault_messge:0
+		battery1sn:None
+		battery2sn:None
+		battery3sn:None
+		battery4sn:None
+		battery5sn:None
+		battery6sn:None
+		battery7sn:None
+		battery8sn:None
+		pf:None
+		pv_power:0.0
+		reactive_power:0.0
+		leakage_current:0
+		isbuettey:True
+		isbuetteybps:False
+		isbuetteybpu:False
+		isESUOREMU:True
+		backUpPload_S:-1.0
+		backUpVload_S:6553.5
+		backUpIload_S:6553.5
+		backUpPload_T:-1.0
+		backUpVload_T:6553.5
+		backUpIload_T:6553.5
+		eTotalBuy:2.4
+		eDayBuy:0.0
+		eBatteryCharge:0.0
+		eChargeDay:0.0
+		eBatteryDischarge:0.0
+		eDischargeDay:0.0
+		battStrings:0.0
+		meterConnectStatus:0.0
+		mtActivepowerR:-1516.0
+		mtActivepowerS:0.0
+		mtActivepowerT:0.0
+		ezPro_connect_status:None
+		dataloggersn:
+		equipment_name:None
+		hasmeter:True
+		meter_type:1.0
+		pre_hour_lasttotal:None
+		pre_hour_time:None
+		current_hour_pv:0.0
+		extend_properties:None
+		eP_connect_status_happen:None
+		eP_connect_status_recover:None
+		total_sell:10.01937
+		total_buy:18.2225
+		errors:[]
+		safetyConutry:33.0
+		deratingMode:None
+	time:02/19/2022 09:48:31
+	battery:0V/0A/0W
+	firmware_version:316.0
+	warning_bms:--
+	soh:0%
+	discharge_current_limit_bms:1A
+	charge_current_limit_bms:0A
+	soc:0%
+	pv_input_2:220.5V/5.3A
+	pv_input_1:214.5V/5.5A
+	back_up_output:241.3V/0W
+	output_voltage:241.7V
+	backup_voltage:241.3V
+	output_current:9.4A
+	output_power:2254W
+	total_generation:1722.4kWh
+	daily_generation:2.7kWh
+	battery_charging:0V/0A/0W
+	last_refresh_time:02/19/2022 09:48:25
+	bms_status:No battery
+	pw_id:ce34a6a9-c0e3-44d1-bb68-393aabc6e173
+	fault_message:
+	battery_power:0.0
+	point_index:8
+	points:[{'target_index': 1, 'target_name': 'Vpv1', 'display': 'Vpv1(V)', 'unit': 'V', 'target_key': 'Vpv1', 'text_cn': '直流电压1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 2, 'target_name': 'Vpv2', 'display': 'Vpv2(V)', 'unit': 'V', 'target_key': 'Vpv2', 'text_cn': '直流电压2', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 5, 'target_name': 'Ipv1', 'display': 'Ipv1(A)', 'unit': 'A', 'target_key': 'Ipv1', 'text_cn': '直流电流1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 6, 'target_name': 'Ipv2', 'display': 'Ipv2(A)', 'unit': 'A', 'target_key': 'Ipv2', 'text_cn': '直流电流2', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 9, 'target_name': 'Ua', 'display': 'Ua(V)', 'unit': 'V', 'target_key': 'Vac1', 'text_cn': '交流电压1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 12, 'target_name': 'Iac1', 'display': 'Iac1(A)', 'unit': 'A', 'target_key': 'Iac1', 'text_cn': '交流电流1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 15, 'target_name': 'Fac1', 'display': 'Fac1(Hz)', 'unit': 'Hz', 'target_key': 'Fac1', 'text_cn': '频率1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 18, 'target_name': 'Power', 'display': 'Power(W)', 'unit': 'W', 'target_key': 'Pac', 'text_cn': '功率', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 19, 'target_name': 'WorkMode', 'display': 'WorkMode', 'unit': '', 'target_key': 'WorkMode', 'text_cn': '工作模式', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 20, 'target_name': 'Temperature', 'display': 'Temperature(℃)', 'unit': '℃', 'target_key': 'Tempperature', 'text_cn': '温度', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 23, 'target_name': 'HTotal', 'display': 'HTotal(h)', 'unit': 'h', 'target_key': 'HTotal', 'text_cn': '工作时长', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 37, 'target_name': 'PV Generation', 'display': 'PV Generation(kWh)', 'unit': 'kWh', 'target_key': 'pv_etotal_l+pv_etotal_h*65536', 'text_cn': '光伏发电量', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 38, 'target_name': 'Pmeter', 'display': 'Pmeter(W)', 'unit': 'W', 'target_key': 'Pmeter', 'text_cn': '电表功率', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 39, 'target_name': 'Pbackup', 'display': 'Pbackup(W)', 'unit': 'W', 'target_key': 'Pbackup', 'text_cn': '后备输出功率', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 40, 'target_name': 'Vbackup', 'display': 'Vbackup(V)', 'unit': 'V', 'target_key': 'Vload', 'text_cn': '后备输出电压1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 41, 'target_name': 'Ibackup', 'display': 'Ibackup(A)', 'unit': 'A', 'target_key': 'Iload', 'text_cn': '后备输出电流1', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 42, 'target_name': 'Vbat', 'display': 'Vbat(V)', 'unit': 'V', 'target_key': 'VBattery1', 'text_cn': '电池电压', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 43, 'target_name': 'Ibat', 'display': 'Ibat(A)', 'unit': 'A', 'target_key': 'IBattery1', 'text_cn': '电池电流', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 44, 'target_name': 'SOC', 'display': 'SOC(%)', 'unit': '%', 'target_key': 'Cbattery1', 'text_cn': '电池电量', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 45, 'target_name': 'SOH', 'display': 'SOH(%)', 'unit': '%', 'target_key': 'SOH', 'text_cn': '电池健康度', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 46, 'target_name': 'BMS_Temperature', 'display': 'BMS_Temperature(℃)', 'unit': '℃', 'target_key': 'BMS_Temperature', 'text_cn': '电池温度', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 47, 'target_name': 'BMS_Charge_I_Max', 'display': 'BMS_Charge_I_Max(A)', 'unit': 'A', 'target_key': 'BMS_Charge_I_Max', 'text_cn': '电池充电最大电流', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 48, 'target_name': 'BMS_Discharge_I_Max', 'display': 'BMS_Discharge_I_Max(A)', 'unit': 'A', 'target_key': 'BMS_Discharge_I_Max', 'text_cn': '电池放电最大电流', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 49, 'target_name': 'Daily Output', 'display': 'Daily Output(kWh)', 'unit': 'kWh', 'target_key': 'EDay_EXP_1', 'text_cn': '日输出电量', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 50, 'target_name': 'Total Output', 'display': 'Total Output(kWh)', 'unit': 'kWh', 'target_key': 'ETotal_EXP_1', 'text_cn': '总输出电量', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}, {'target_index': 400, 'target_name': 'BMS Version', 'display': 'BMS Version', 'unit': '', 'target_key': 'BMSSoftwareVersion', 'text_cn': 'BMS版本', 'target_sn_six': None, 'target_sn_seven': None, 'target_type': None, 'storage_name': None}]
+	backup_pload_s:-1.0
+	backup_vload_s:6553.5
+	backup_iload_s:6553.5
+	backup_pload_t:-1.0
+	backup_vload_t:6553.5
+	backup_iload_t:6553.5
+	etotal_buy:2.4
+	eday_buy:0.0
+	ebattery_charge:0.0
+	echarge_day:0.0
+	ebattery_discharge:0.0
+	edischarge_day:0.0
+	batt_strings:0.0
+	meter_connect_status:0.0
+	mtactivepower_r:-1516.0
+	mtactivepower_s:0.0
+	mtactivepower_t:0.0
+	has_tigo:False
+	canStartIV:False
+
+hjgx
+
+	co2:1.7172328000000001
+	tree:94.12916
+	coal:0.6958496000000001
+pre_powerstation_id:None
+nex_powerstation_id:None
+
+homKit
+
+	homeKitLimit:False
+	sn:None
+isTigo:False
+tigoIntervalTimeMinute:15
+
+smuggleInfo
+
+	isAllSmuggle:False
+	isSmuggle:False
+	descriptionText:None
+	sns:None
+
+powerflow
+
+	pv:2348.4(W)
+	pvStatus:-1
+	bettery:0(W)
+	betteryStatus:0
+	betteryStatusStr:None
+	load:3864.4(W)
+	loadStatus:1
+	grid:1516(W)
+	soc:0
+	socText:No battery
+	hasEquipment:True
+	gridStatus:1
+	isHomKit:False
+	isBpuAndInverterNoBattery:False
+	isMoreBettery:False
+
+energeStatisticsCharts
+
+	sum:2.7
+	buy:9.05
+	buyPercent:86.6
+	sell:1.3
+	sellPercent:48.1
+	selfUseOfPv:1.4
+	consumptionOfLoad:10.45
+	chartsType:1
+	hasPv:True
+	hasCharge:False
+	charge:0.0
+	disCharge:0.0
+
+soc
+
+	power:0
+	status:0
+dict_keys(['info', 'kpi', 'powercontrol_status', 'images', 'weather', 'inverter', 'hjgx', 'pre_powerstation_id', 'nex_powerstation_id', 'homKit', 'isTigo', 'tigoIntervalTimeMinute', 'smuggleInfo', 'powerflow', 'energeStatisticsCharts', 'soc'])
+[{'vdc1': 214.5, 'vdc2': 220.5, 'ipv1': 5.5, 'ipv2': 5.3, 'fac1': 49.98, 'vac1': 241.7, 'iac1': 9.4, 'itemp': 32.0, 'pdc': 2348.3999999999996, 'pac': 2254.4639999999995, 'e_Wh': 187.87199999999996}]

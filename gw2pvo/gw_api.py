@@ -94,6 +94,28 @@ class GoodWeApi:
 
         return result
 
+    def getLoadKwh(self, date):
+        payload = {
+            'id' : self.system_id,
+            'range' : '2',
+            'chartIndexId': '8',
+            'date' : date.strftime('%Y-%m-%d')
+        }
+        data = self.call("v2/Charts/GetChartByPlant", payload)
+        if not data:
+            logging.warning("GetChartByPlant missing data")
+            return 0
+
+        elday_kwh = 0
+        for line in data["lines"]:
+            if line['label'] == "Consumption (kWh)":
+                for xy in line["xy"]:
+                    if xy["x"] == date.strftime('%Y-%m-%d'):
+                        logging.debug(f"Found load consumption {xy['y']}")
+                        elday_kwh = xy['y']
+
+        return elday_kwh
+
     def getActualKwh(self, date):
         payload = {
             'powerstation_id' : self.system_id,
@@ -172,24 +194,27 @@ class GoodWeApi:
             next_hours = parsed_date.hour + parsed_date.minute / 60
             pgrid_w = samplepac['pac']
             pload_w = samplepload['y']
-            if pload_w > 0:
-                kwh_l += pload_w / 1000 * (next_hours - hours)
-                if pgrid_w > 0:
-                    kwh += pgrid_w / 1000 * (next_hours - hours)
-                    result['entries'].append({
-                        'dt' : parsed_date,
-                        'pgrid_w': pgrid_w,
-                        'eday_kwh': round(kwh, 3),
-                        'pload_w': pload_w,
-                        'ploadday_kwh': round(kwh_l,3)
-                    })
+            kwh_l += pload_w / 1000 * (next_hours - hours)
+            kwh += pgrid_w / 1000 * (next_hours - hours)
+            result['entries'].append({
+                'dt' : parsed_date,
+                'pgrid_w': pgrid_w,
+                'eday_kwh': round(kwh, 3),
+                'pload_w': pload_w,
+                'ploadday_kwh': round(kwh_l,3)
+                })
             hours = next_hours
 
         eday_kwh = self.getActualKwh(date)
+        elday_kwh = self.getLoadKwh(date)
         if eday_kwh > 0:
             correction = eday_kwh / kwh
             for sample in result['entries']:
                 sample['eday_kwh'] *= correction
+        if elday_kwh > 0:
+            correction = elday_kwh / kwh_l
+            for sample in result['entries']:
+                sample['ploadday_kwh'] *= correction
 
         return result
 
