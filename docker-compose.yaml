@@ -1,0 +1,8 @@
+version: "3"
+services:
+   gw2pvo:
+     build: .
+     volumes:
+       - ./gw2pvo.cfg:/gw2pvo.cfg
+     restart: unless-stopped
+ 
