@@ -197,6 +197,13 @@ Do set `city` to a [valid value](https://astral.readthedocs.io/en/stable/index.h
 docker run --rm -v $(pwd)/gw2pvo.cfg:/gw2pvo.cfg gw2pvo
 ```
 
+or use docker compose:
+
+
+```shell
+docker compose up -d
+```
+
 ## Recover missed data
 
 You can copy a day of readings from GoodWe to PVOutput. Interval will be 10 minutes as this is what the API provides. Syntax:
